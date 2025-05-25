@@ -1,4 +1,4 @@
-# 🎸 Bocchi the Rock! Fan Page (AD-Task-2)🎶
+# 🎸 Bocchi the Rock! Fan Page (AD-Task-3)🎶
 
 Welcome to the **Bocchi the Rock! Fan Page**, a lovingly crafted website dedicated to the amazing anime series *Bocchi the Rock!* 🌟
 
@@ -12,6 +12,14 @@ Welcome to the **Bocchi the Rock! Fan Page**, a lovingly crafted website dedicat
 - **Back Button**: Easily navigate back to the previous page.
 - **Band Info Section**: Displays detailed information about each band member using arrays and dictionaries.
 - **Hover Effects**: Interactive hover effects for character names with color changes and underlines.
+- **🎵 Floating MP3 Player**: Listen to a curated playlist of Bocchi the Rock! songs while browsing the site.
+    - **Playlist Dropdown**: View and select from a list of available songs.
+    - **Progress Bar & Timer**: Track song progress with a visual slider and time display.
+    - **Volume Control**: Adjust the audio volume with a modern slider.
+    - **Playback Controls**: Play, pause, skip, rewind, fast-forward, and navigate between songs.
+    - **Shuffle & Loop Modes**: Shuffle songs, loop the playlist, or repeat a single song with intuitive toggles.
+    - **Draggable & Minimize**: Move the player anywhere on the screen or minimize it for convenience.
+    - **Responsive UI**: Player adapts to different screen sizes and themes.
 
 ---
 
@@ -29,8 +37,8 @@ Welcome to the **Bocchi the Rock! Fan Page**, a lovingly crafted website dedicat
   - **Functions**: Modularized code for reusable components like displaying band members.
   - **Fragmentation**: Organized code into reusable components (e.g., header, footer, back button).
 
-- **CSS**: For styling and themes.
-- **JavaScript**: For interactive features like image navigation.
+- **CSS**: For styling and themes, including the custom MP3 player.
+- **JavaScript**: For interactive features like image navigation and the advanced MP3 player controls.
 - **HTML**: For structure and layout.
 
 ---
