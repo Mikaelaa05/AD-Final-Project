@@ -47,98 +47,93 @@ const songs = [
         logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "What is wrong with",
+        file: BASE_URL + "assets/mp3/What is wrong with.mp3",
+        logo: BASE_URL + "assets/img/songs/What is wrong with.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "Never forget",
+        file: BASE_URL + "assets/mp3/Never forget.mp3",
+        logo: BASE_URL + "assets/img/songs/Never forget.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "If I could be a constellation",
+        file: BASE_URL + "assets/mp3/If I could be a constellation.mp3",
+        logo: BASE_URL + "assets/img/songs/If I could be a constellation.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "Flashbacker",
+        file: BASE_URL + "assets/mp3/Flashbacker.mp3",
+        logo: BASE_URL + "assets/img/songs/Flashbacker.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "Rockn'Roll, Morning Light Falls on You",
+        file: BASE_URL + "assets/mp3/Rockn'Roll, Morning Light Falls on You.mp3",
+        logo: BASE_URL + "assets/img/songs/Rockn'Roll, Morning Light Falls on You.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "Into the Light",
+        file: BASE_URL + "assets/mp3/Into the Light.mp3",
+        logo: BASE_URL + "assets/img/songs/Into the Light.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "Blue Spring and Western Sky",
+        file: BASE_URL + "assets/mp3/Blue Spring and Western Sky.mp3",
+        logo: BASE_URL + "assets/img/songs/Blue Spring and Western Sky.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "Shine as usual",
+        file: BASE_URL + "assets/mp3/Shine as usual.mp3",
+        logo: BASE_URL + "assets/img/songs/Shine as usual.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "Now, I'm going from underground",
+        file: BASE_URL + "assets/mp3/Now, I'm going from underground.mp3",
+        logo: BASE_URL + "assets/img/songs/Now, I'm going from underground.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "Doppelganger",
+        file: BASE_URL + "assets/mp3/Doppelganger.mp3",
+        logo: BASE_URL + "assets/img/songs/Doppelganger.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "Me and the three primary colors",
+        file: BASE_URL + "assets/mp3/Me and the three primary colors.mp3",
+        logo: BASE_URL + "assets/img/songs/Me and the three primary colors.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "Chronostasis",
+        file: BASE_URL + "assets/mp3/Chronostasis.mp3",
+        logo: BASE_URL + "assets/img/songs/Chronostasis.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "Re:Re:",
+        file: BASE_URL + "assets/mp3/Re-Re-.mp3",
+        logo: BASE_URL + "assets/img/songs/Re-Re-.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "milky way",
+        file: BASE_URL + "assets/mp3/milky way.mp3",
+        logo: BASE_URL + "assets/img/songs/milky way.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "Planet",
+        file: BASE_URL + "assets/mp3/Planet.mp3",
+        logo: BASE_URL + "assets/img/songs/Planetjpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "UNITE",
+        file: BASE_URL + "assets/mp3/UNITE.mp3",
+        logo: BASE_URL + "assets/img/songs/UNITE.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "Bundle up your dreams",
+        file: BASE_URL + "assets/mp3/Bundle up your dreams.mp3",
+        logo: BASE_URL + "assets/img/songs/Bundle up your dreams.jpg"
     },
     {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
-    },
-    {
-        title: "hitoribocchi tokyo",
-        file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
+        title: "I'm the only ghost",
+        file: BASE_URL + "assets/mp3/I'm the only ghost.mp3",
+        logo: BASE_URL + "assets/img/songs/I'm the only ghost.jpg"
     },
 ]
