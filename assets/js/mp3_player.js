@@ -281,7 +281,41 @@ window.selectSong = function(idx) {
 };
 
 audio.addEventListener("ended", () => {
-    if (!isLoop) nextSong();
+    if (audio.loop) {
+        // Loop One: let the browser handle repeating the current song
+        return;
+    }
+    if (isLoop) {
+        if (isShuffle) {
+            // Shuffle + Loop: pick a random song (not the current one)
+            let next;
+            do {
+                next = Math.floor(Math.random() * songs.length);
+            } while (next === current && songs.length > 1);
+            current = next;
+        } else {
+            // Loop Playlist: go to next song, wrap to first if at end
+            current = (current + 1) % songs.length;
+        }
+        loadSong(current);
+        playSong();
+    } else {
+        // No loop: just go to next song if not at end
+        if (current < songs.length - 1) {
+            if (isShuffle) {
+                let next;
+                do {
+                    next = Math.floor(Math.random() * songs.length);
+                } while (next === current && songs.length > 1);
+                current = next;
+            } else {
+                current++;
+            }
+            loadSong(current);
+            playSong();
+        }
+        // else: do nothing (stop at last song)
+    }
 });
 
 audio.addEventListener("timeupdate", updateProgress);
@@ -378,32 +412,39 @@ window.addEventListener("DOMContentLoaded", () => {
 
 const loopOneBtn = document.getElementById("loop-one-btn");
 
+// Hide Loop One button by default
+loopOneBtn.style.display = "none";
+
 function toggleLoop() {
     if (!isLoop && !audio.loop) {
+        // 1st click: Enable Loop Playlist
         isLoop = true;
         audio.loop = false;
         loopBtn.classList.add("active");
+        loopBtn.style.display = ""; // Show Loop button
         loopOneBtn.classList.remove("active");
-        loopOneBtn.style.display = "";
-        loopBtn.style.display = "";
+        loopOneBtn.style.display = "none"; // Hide Loop One button
     } else if (isLoop && !audio.loop) {
+        // 2nd click: Enable Loop One
         isLoop = false;
         audio.loop = true;
         loopBtn.classList.remove("active");
+        loopBtn.style.display = "none"; // Hide Loop button
         loopOneBtn.classList.add("active");
-        loopOneBtn.style.display = "";
-        loopBtn.style.display = "none";
+        loopOneBtn.style.display = ""; // Show Loop One button
     } else {
+        // 3rd click: Disable all loops
         isLoop = false;
         audio.loop = false;
         loopBtn.classList.remove("active");
+        loopBtn.style.display = ""; // Show Loop button
         loopOneBtn.classList.remove("active");
-        loopOneBtn.style.display = "none";
-        loopBtn.style.display = "";
+        loopOneBtn.style.display = "none"; // Hide Loop One button
     }
     saveState();
 }
 
+// Only use loopBtn for toggling
 loopBtn.addEventListener("click", toggleLoop);
 loopOneBtn.addEventListener("click", toggleLoop);
 
