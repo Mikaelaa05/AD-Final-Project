@@ -12,13 +12,13 @@
     </div>
     <audio id="audio" preload="metadata"></audio>
     <div class="player-controls">
+        <button id="shuffle-btn" title="Shuffle">🔀</button>
         <button id="prev-btn" title="Previous">⏮️</button>
         <button id="rewind-btn" title="Rewind 5s">⏪</button>
         <button id="play-btn" title="Play">▶️</button>
         <button id="pause-btn" style="display:none;" title="Pause">⏸️</button>
         <button id="ff-btn" title="Forward 5s">⏩</button>
         <button id="next-btn" title="Next">⏭️</button>
-        <button id="shuffle-btn" title="Shuffle">🔀</button>
         <button id="loop-btn" title="Loop">🔁</button>
         <button id="loop-one-btn" title="Loop One" style="display:none;">🔂</button>
     </div>
