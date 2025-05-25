@@ -1,17 +1,7 @@
 <?php include 'components/header.php'; ?>
+<?php include 'components/band_members.php'; ?>
 
-<?php $isBind = true;
-
-function displayBandMembers($members)
-{
-    echo "<p>Kessoku Band Members:</p><ul>";
-    foreach ($members as $member) {
-        echo "<li>" . $member . "</li>";
-    }
-    echo "</ul>";
-}
-
-?>
+<?php $isBind = true; ?>
 
 <div class="card">
     <h2>Welcome to the <?php echo $theme; ?> Fan Page!</h2>
