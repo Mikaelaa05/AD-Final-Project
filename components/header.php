@@ -30,15 +30,7 @@
             <div class="header-content">
                 <img src=" <?php echo BASE_URL; ?>assets\img\Bocchi the rock logo small.png" alt="Bocchi the Rock! logo"
                     class="logo-left">
-                <nav>
-                    <ul>
-                        <li><a href="<?php echo BASE_URL; ?>index.php">Home</a></li>
-                        <li><a href="<?php echo BASE_URL; ?>page/about.php">About</a></li>
-                        <li><a href="<?php echo BASE_URL; ?>page/characters.php">Characters</a></li>
-                        <li><a href="<?php echo BASE_URL; ?>page/band_info.php">Band Info</a></li>
-                        <li><a href="<?php echo BASE_URL; ?>page/contact.php">Contact Us</a></li>
-                    </ul>
-                </nav>
+                <?php include_once __DIR__ . '/navbar.php'; ?>
                 <img src="<?php echo BASE_URL; ?>assets\img\Kessoku Band Logo Clear.png" alt="Kessoku Band logo"
                     class="logo-right">
             </div>
