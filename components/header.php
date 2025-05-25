@@ -6,7 +6,7 @@
         <title><?php echo $theme; ?> Fan Page</title>
 
         <script>
-            const BASE_URL = "<?php echo BASE_URL; ?>";
+            window.BASE_URL = "<?php echo BASE_URL; ?>";
         </script>
 
         <script src="<?php echo BASE_URL; ?>page/assets/js/character_navigation.js"></script>
@@ -18,11 +18,8 @@
         $cssPath = BASE_URL . "page/assets/css/$currentPage.css";
         if (file_exists(__DIR__ . "/../page/assets/css/$currentPage.css")) {
             echo "<link rel='stylesheet' href='$cssPath'>";
-        } else {
-            echo "<link rel='stylesheet' href='" . BASE_URL . "assets/css/default.css'>";
         }
         ?>
-        <link rel="stylesheet" href="<?php echo $cssPath; ?>">
     </head>
 
     <body>
@@ -31,6 +28,7 @@
                 <img src=" <?php echo BASE_URL; ?>assets\img\Bocchi the rock logo small.png" alt="Bocchi the Rock! logo"
                     class="logo-left">
                 <?php include_once __DIR__ . '/navbar.php'; ?>
+                <?php include_once __DIR__ . '/mp3_player.php'; ?>
                 <img src="<?php echo BASE_URL; ?>assets\img\Kessoku Band Logo Clear.png" alt="Kessoku Band logo"
                     class="logo-right">
             </div>

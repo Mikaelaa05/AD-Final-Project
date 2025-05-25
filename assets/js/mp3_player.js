@@ -14,7 +14,7 @@ const songs = [
     {
         title: "Distortion!!",
         file: BASE_URL + "assets/mp3/Distortion!!.mp3",
-        logo: BASE_URL + "assets/img/songs/Distortion!!jpg"
+        logo: BASE_URL + "assets/img/songs/Distortion!!.jpg"
     },
     {
         title: "Secret base",
@@ -68,7 +68,7 @@ const songs = [
     },
     {
         title: "Rockn'Roll, Morning Light Falls on You",
-        file: BASE_URL + "assets/mp3/Rockn'Roll, Morning Light Falls on You.mp3",
+        file: BASE_URL + "assets/mp3/Rockn' Roll, Morning Light Falls on You.mp3",
         logo: BASE_URL + "assets/img/songs/Rockn'Roll, Morning Light Falls on You.jpg"
     },
     {
@@ -119,7 +119,7 @@ const songs = [
     {
         title: "Planet",
         file: BASE_URL + "assets/mp3/Planet.mp3",
-        logo: BASE_URL + "assets/img/songs/Planetjpg"
+        logo: BASE_URL + "assets/img/songs/Planet.jpg"
     },
     {
         title: "UNITE",
@@ -177,7 +177,7 @@ function saveState() {
 function loadSong(idx) {
     audio.src = songs[idx].file;
     songLogo.src = songs[idx].logo;
-    songTitle.textContent = song[idx].title;
+    songTitle.textContent = songs[idx].title;
     updatePlaylistHighlight();
     saveState();
 }
@@ -185,9 +185,9 @@ function loadSong(idx) {
 function playSong() {
     audio.play();
     isPlaying = true;
-    playBtn.style.display = "";
-    pauseBtn.style.display = "none";
-    songLogo.classList.remove("spin");
+    playBtn.style.display = "none";
+    pauseBtn.style.display = "";
+    songLogo.classList.add("spin");
 }
 
 function pauseSong() {
@@ -195,7 +195,7 @@ function pauseSong() {
     isPlaying = false;
     playBtn.style.display = "";
     pauseBtn.style.display = "none";
-    sonmgLogo.classList.remove("spin");
+    songLogo.classList.remove("spin");
 }
 
 function nextSong() {
@@ -242,14 +242,13 @@ function setVolume(e) {
 
 function toggleShuffle() {
     isShuffle = !isShuffle;
-    shuffleBtn.style.color = isShuffle ? "#ff80bf" : "";
+    shuffleBtn.classList.toggle("active", isShuffle);
     saveState();
 }
 
 function toggleLoop() {
     isLoop = !isLoop;
-    audio.loop = isLoop;
-    loopBtn.style.color = isLoop ? "#ff80bf" : "";
+    loopBtn.classList.toggle("active", isLoop);
     saveState();
 }
 
@@ -278,7 +277,7 @@ window.selectSong = function(idx) {
     current = idx;
     loadSong(current);
     playSong();
-    playlistDiv.style.display = "none";
+    //playlistDiv.style.display = "none";
 };
 
 audio.addEventListener("ended", () => {
@@ -309,20 +308,139 @@ player.addEventListener("mousedown", (e) => {
         isDragging = true;
         offsetx = e.clientX - player.offsetLeft;
         offsety = e.clientY - player.offsetTop;
-        document.body.style.userSelect = "none;"
+        document.body.style.userSelect = "none";
     }
 });
-
 document.addEventListener("mousemove", (e) => {
     if (isDragging) {
-        player.style.left = (e.clientX - offsetx) + "px";
-        player.style.top = (e.clientY - offsety) + "px";
+        let newLeft = e.clientX - offsetx;
+        let newTop = e.clientY - offsety;
+
+        const playerRect = player.getBoundingClientRect();
+        const minLeft = 0;
+        const minTop = 0;
+        const maxLeft = window.innerWidth - playerRect.width;
+        const maxTop = window.innerHeight - playerRect.height;
+
+        newLeft = Math.max(minLeft, Math.min(newLeft, maxLeft));
+        newTop = Math.max(minTop, Math.min(newTop, maxTop));
+
+        player.style.left = newLeft + "px";
+        player.style.top = newTop + "px";
         player.style.right = "auto";
         player.style.bottom = "auto";
     }
 });
-
 document.addEventListener("mouseup", () => {
     isDragging = false;
     document.body.style.userSelect = "";
+});
+
+const minimizeBtn = document.getElementById("minimize-player");
+minimizeBtn.addEventListener("click", () => {
+    player.style.display = "none";
+    // Optionally, show a small button to restore the player
+    let restoreBtn = document.getElementById("restore-player-btn");
+    if (!restoreBtn) {
+        restoreBtn = document.createElement("button");
+        restoreBtn.id = "restore-player-btn";
+        restoreBtn.textContent = "🎵";
+        restoreBtn.title = "Show Player";
+        restoreBtn.style.position = "fixed";
+        restoreBtn.style.bottom = "30px";
+        restoreBtn.style.right = "30px";
+        restoreBtn.style.zIndex = 10000;
+        restoreBtn.style.background = "#ff80bf";
+        restoreBtn.style.color = "#fff";
+        restoreBtn.style.border = "none";
+        restoreBtn.style.borderRadius = "50%";
+        restoreBtn.style.width = "40px";
+        restoreBtn.style.height = "40px";
+        restoreBtn.style.fontSize = "1.5em";
+        document.body.appendChild(restoreBtn);
+        restoreBtn.addEventListener("click", () => {
+            player.style.display = "";
+            restoreBtn.remove();
+        });
+    }
+});
+
+window.addEventListener("beforeumload", () => {
+    localStorage.setitem('mp3player-autoplay', isPlaying);
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+    const shouldAutoplay = localStorage.getItem('mp3player-autoplay') === "true";
+    if (shouldAutoplay) {
+        playSong();
+    }
+});
+
+const loopOneBtn = document.getElementById("loop-one-btn");
+
+function toggleLoop() {
+    if (!isLoop && !audio.loop) {
+        isLoop = true;
+        audio.loop = false;
+        loopBtn.classList.add("active");
+        loopOneBtn.classList.remove("active");
+        loopOneBtn.style.display = "";
+        loopBtn.style.display = "";
+    } else if (isLoop && !audio.loop) {
+        isLoop = false;
+        audio.loop = true;
+        loopBtn.classList.remove("active");
+        loopOneBtn.classList.add("active");
+        loopOneBtn.style.display = "";
+        loopBtn.style.display = "none";
+    } else {
+        isLoop = false;
+        audio.loop = false;
+        loopBtn.classList.remove("active");
+        loopOneBtn.classList.remove("active");
+        loopOneBtn.style.display = "none";
+        loopBtn.style.display = "";
+    }
+    saveState();
+}
+
+loopBtn.addEventListener("click", toggleLoop);
+loopOneBtn.addEventListener("click", toggleLoop);
+
+window.addEventListener("beforeunload", () => {
+    localStorage.setItem('mp3player-autoplay', isPlaying);
+    localStorage.setItem('mp3player-time', audio.currentTime);
+    localStorage.setItem('mp3player-current', current);
+    localStorage.setItem('mp3player-volume', audio.volume);
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+    const shouldAutoplay = localStorage.getItem('mp3player-autoplay') === "true";
+    const savedTime = parseFloat(localStorage.getItem('mp3player-time') || "0");
+    const savedCurrent = parseInt(localStorage.getItem('mp3player-current') || "0");
+    const savedVolume = parseFloat(localStorage.getItem('mp3player-volume') || "1");
+    current = savedCurrent;
+    loadSong(current);
+    audio.currentTime = savedTime;
+    audio.volume = savedVolume;
+    volume.value = savedVolume;
+    if (shouldAutoplay) {
+        playSong();
+    }
+});
+
+const currentTimeLabel = document.getElementById("current-time");
+const totalTimeLabel = document.getElementById("total-time");
+
+function formatTime(sec) {
+    sec = Math.floor(sec);
+    return `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`;
+}
+
+audio.addEventListener("timeupdate", () => {
+    currentTimeLabel.textContent = formatTime(audio.currentTime);
+    progress.value = (audio.currentTime / audio.duration) * 100 || 0;
+});
+audio.addEventListener("loadedmetadata", () => {
+    totalTimeLabel.textContent = formatTime(audio.duration);
 });
