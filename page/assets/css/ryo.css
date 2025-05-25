@@ -1,0 +1,81 @@
+body {
+    background-color: #e6f2ff;
+    color: #003366;
+}
+
+header, footer, .card {
+    background-color: #3399ff;
+    border-color: #3399ff;
+}
+
+.ryo-card {
+    text-align: center;
+}
+
+.character-image-container {
+    position: relative;
+    display: inline-block;
+    margin: 20px auto;
+}
+
+.character-image-container img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.image-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-nav.left {
+    left: 10px;
+}
+
+.image-nav.right {
+    right: 10px;
+}
+
+.image-nav:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.ryo-card p {
+    margin-top: 20px;
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.nav-button {
+    background-color: #3399ff;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.nav-button:hover {
+    background-color: #2673cc;
+}
