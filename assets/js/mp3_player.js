@@ -4,11 +4,11 @@ const songs = [
     {
         title: "seishun complex",
         file: BASE_URL + "assets/mp3/seishun complex.mp3",
-        logo: BASE_URL + "assets/img/Songs/seishun complex.jpg"
+        logo: BASE_URL + "assets/img/songs/seishun complex.jpg"
     },
     {
         title: "hitoribocchi tokyo",
         file: BASE_URL + "assets/mp3/hitoribocchi tokyo.mp3",
-        logo: BASE_URL + "assets/img/Songs/hitoribocchi tokyo.jpg"
+        logo: BASE_URL + "assets/img/songs/hitoribocchi tokyo.jpg"
     }
 ]
