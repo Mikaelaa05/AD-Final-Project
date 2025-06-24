@@ -1,1 +1,0 @@
-console.log("Bocchi the Rock! Fan page loaded!");

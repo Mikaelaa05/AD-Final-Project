@@ -1,30 +1,15 @@
-<?php include 'components/header.php'; ?>
-<?php include 'components/band_members.php'; ?>
+<?php
 
-<?php $isBind = true; ?>
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-<div class="card">
-    <h2>Welcome to the <?php echo $theme; ?> Fan Page!</h2>
-    <p>This is a fan page dedicated to the amazing anime series "<?php echo $theme; ?>" and its characters. To do this,
-        it utilizes the basics of PHP!</p>
-    <p>For more information, visit the Bocchi the Rock! <a href="https://bocchi.rocks">official website</a> here!</p>
-</div>
 
-<div class="card">
-    <h3>PHP Basics</h3>
-    <?php
-    $members = [
-        'Gotoh Hitori',
-        'Kita Ikuyo',
-        'Ichiji Nijika',
-        'Yamada Ryo'
-    ];
-    if ($isBind) {
-        displayBandMembers($members); // Call the function to display members
-    } else {
-        echo "<p>Not a member of Kessoku Band</p>";
-    }
-    ?>
-</div>
+require_once __DIR__ . '/bootstrap.php';
 
-<?php include 'components/footer.php'; ?>
+require_once BASE_PATH . '/handlers/mongodbChecker.handler.php';
+require_once BASE_PATH . '/handlers/postgreChecker.handler.php';
+
+echo ("Hello World");
+
+?>
