@@ -4,7 +4,7 @@ services:
       context: .
     container_name: mikatherock-service
     ports:
-      - "8080:80"
+      - "9000:80"
     develop:
       watch:
         - path: .

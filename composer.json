@@ -1,9 +1,9 @@
 {
-    "name": "mikaelacid/database-task-1",
+    "name": "bumbl/ad-task-3",
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Mikaelacid\\DatabaseTask1\\": "src/"
+            "Bumbl\\AdTask3\\": "src/"
         }
     },
     "authors": [
