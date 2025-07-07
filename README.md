@@ -5,28 +5,23 @@
 <br />
 <div align="center">
   <a href="https://https://github.com/Mikaelaa05">
-  <!-- TODO: If you want to add logo or banner you can add it here -->
+
     <img src="assets/img/Kessoku_Band_Logo_Clear.png" alt="Nyebe" width="130" height="100">
   </a>
-<!-- TODO: Change Title to the name of the title of your Project -->
+
   <h3 align="center">AD-Task-3</h3>
 </div>
-<!-- TODO: Make a short description -->
+
 <div align="center">
   Lorem Ipsum Dolor Amet. (Optional)
 </div>
 
-<br />
-
-<!-- TODO: Change the zyx-0314 into your github username  -->
-<!-- TODO: Change the WD-Template-Project into the same name of your folder -->
-
+<br/>
 
 [![wakatime](https://wakatime.com/badge/user/018ee98a-e312-42fb-ac75-7e01d98002aa/project/329812e0-14f1-4c63-bb76-11e38eb7aa64.svg)](https://wakatime.com/badge/user/018ee98a-e312-42fb-ac75-7e01d98002aa/project/329812e0-14f1-4c63-bb76-11e38eb7aa64)
 
 ---
 
-<!-- TODO: If you want to add more layers for your readme -->
 <details>
   <summary>Table of Contents</summary>
   <ol>
@@ -54,19 +49,16 @@
 
 ## Overview
 
-<!-- TODO: To be changed -->
-<!-- The following are just sample -->
+Lorem Ipsum Dolor Si Amet
 
 Description of the project in details.
 
 ### Key Components
 
-<!-- TODO: List of Key Components -->
-<!-- The following are just sample -->
+Lorem Ipsum Dolor Si Amet
 
 ### Technology
 
-<!-- TODO: List of Technology Used -->
 #### Language
 ![HTML](https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white)
