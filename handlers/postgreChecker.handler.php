@@ -1,10 +1,12 @@
 <?php
 
-$host = "host.docker.internal";
-$port = "5112";
-$username = "user";
-$password = "password";
-$dbname = "mydatabase";
+require_once BASE_PATH . '/utils/envSetter.util.php';
+
+$host = $typeConfig['pgHost'];
+$port = $typeConfig['pgPort'];
+$username = $typeConfig['pgUser'];
+$password = $typeConfig['pgPass'];
+$dbname = $typeConfig['pgDb'];
 
 $conn_string = "host=$host port=$port dbname=$dbname user=$username password=$password";
 
