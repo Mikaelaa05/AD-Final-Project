@@ -11,7 +11,7 @@ require_once BASE_PATH . '/handlers/postgreChecker.handler.php';
 session_start();
 
 if (!isset($_SESSION['user'])) {
-    header('Location: /pages/Login/index.php');
+    include BASE_PATH . '/errors/unauthorized.error.php';
     exit;
 }
 
