@@ -56,9 +56,12 @@ AD-Task-3 is a modern PHP web application template for rapid development with Do
 **Key Features:**
 - User registration, login, and logout with secure password hashing
 - PostgreSQL and MongoDB integration (with Docker Compose)
-- Database migration and seeding utilities
+- Database migration, seeding, and reset utilities (with UUID support)
 - Modular PHP structure (components, layouts, handlers, utils)
 - Environment variable management via `.env`
+- Custom error pages and handler-based error/status exposure
+- Centralized routing with `router.php` for clean URLs and navigation
+- Multi-table seeding: users, projects, tasks, project_users
 - Ready for deployment or classroom demonstration
 
 ### Key Components
@@ -67,9 +70,11 @@ AD-Task-3 is a modern PHP web application template for rapid development with Do
 | --------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | **Auth Module**       | Handles user registration, login, logout, and session management.     | PHP sessions, PostgreSQL (users table), password hashing/verification.                      |
 | **Database Checkers** | Verifies DB connectivity on load.                                     | PHP, PDO for PostgreSQL, MongoDB PHP extension.                                             |
-| **Seeder/Migration**  | Automates DB schema creation and dummy data population.               | PHP CLI scripts, Composer scripts, SQL model files, static data arrays.                     |
+| **Seeder/Migration**  | Automates DB schema creation and dummy data population.               | PHP CLI scripts, Composer scripts, SQL model files, static data arrays, UUID support.       |
+| **Error Handling**    | Custom error pages for unauthorized access and DB failures.           | PHP includes, `/errors` folder, handler-based error exposure.                               |
 | **Frontend UI**       | Responsive pages for login, signup, dashboard, and error handling.    | HTML, CSS, PHP includes (components/layouts), minimal JS.                                   |
 | **Dockerized Stack**  | Ensures consistent environment for all users.                         | Docker Compose, Dockerfile, .env, Apache, PHP extensions.                                   |
+| **Central Router**    | Clean URL routing for all requests.                                   | `router.php`, PHP built-in server, Apache in Docker.                                        |
 
 ---
 
@@ -90,6 +95,14 @@ AD-Task-3 is a modern PHP web application template for rapid development with Do
 
 #### Deployment
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+
+---
+
+#### Tooling & Extensions
+![Composer](https://img.shields.io/badge/Composer-885630?style=for-the-badge&logo=composer&logoColor=white)
+![vlucas/phpdotenv](https://img.shields.io/badge/phpdotenv-5.6.2-blue?logo=php)
+![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+![DBMC/DBCode](https://img.shields.io/badge/DBMC%20(DBCode)-blue?style=for-the-badge)
 
 ---
 
@@ -201,6 +214,7 @@ AD-ProjectName
 | PHP Official Docs       | Reference for PHP language and extensions.                            | [https://www.php.net/manual/en/](https://www.php.net/manual/en/)           |
 | PostgreSQL Docs         | Reference for PostgreSQL database.                                    | [https://www.postgresql.org/docs/](https://www.postgresql.org/docs/)       |
 | MongoDB Docs            | Reference for MongoDB database.                                       | [https://www.mongodb.com/docs/](https://www.mongodb.com/docs/)             |
+| DBMC/DBCode Extension   | Manage and browse your DB from VS Code.                               | [https://marketplace.visualstudio.com/items?itemName=cweijan.dbclient](https://marketplace.visualstudio.com/items?itemName=cweijan.dbclient) |
 | System Documentation    | Internal docs from PHP, MongoDB, and PostgreSQL used in development.  | — (see `/docs` folder in repo)                                             |
 
 ---
