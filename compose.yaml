@@ -23,7 +23,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootPassword
-      MONGO_INITDB_DATABASE: mydatabase
+      MONGO_INITDB_DATABASE: ad_task3_db
     ports:
       - "27111:27017"
     volumes:
@@ -36,7 +36,7 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydatabase
+      POSTGRES_DB: ad_task3_db
     ports:
       - "5112:5432"
     volumes:
