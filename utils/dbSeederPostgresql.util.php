@@ -67,8 +67,8 @@ foreach (['project_users', 'tasks', 'projects', 'users'] as $table) {
 $users = require DUMMIES_PATH . '/users.staticData.php';
 echo "Seeding users…\n";
 $stmt = $pdo->prepare("
-    INSERT INTO users (id, username, role, first_name, last_name, password)
-    VALUES (:id, :username, :role, :fn, :ln, :pw)
+    INSERT INTO users (id, username, email, password, first_name, last_name, role, is_active)
+    VALUES (:id, :username, :email, :password, :first_name, :last_name, :role, :is_active)
 ");
 $userIds = [];
 foreach ($users as $u) {
@@ -76,10 +76,12 @@ foreach ($users as $u) {
     $stmt->execute([
         ':id' => $uuid,
         ':username' => $u['username'],
+        ':email' => $u['email'],
+        ':password' => password_hash($u['password'], PASSWORD_DEFAULT),
+        ':first_name' => $u['first_name'],
+        ':last_name' => $u['last_name'],
         ':role' => $u['role'],
-        ':fn' => $u['first_name'],
-        ':ln' => $u['last_name'],
-        ':pw' => password_hash($u['password'], PASSWORD_DEFAULT),
+        ':is_active' => $u['is_active'] ? 'true' : 'false'
     ]);
     $userIds[] = $uuid;
 }
