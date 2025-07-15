@@ -38,6 +38,7 @@ $models = [
     'database/projects.model.sql',
     'database/project_users.model.sql',
     'database/tasks.model.sql',
+    'database/products.model.sql',
 ];
 
 foreach ($models as $model) {
@@ -55,7 +56,7 @@ foreach ($models as $model) {
 
 // 2. Truncate tables (clean all data, restart identity)
 echo "Truncating tables…\n";
-foreach (['project_users', 'tasks', 'projects', 'users'] as $table) {
+foreach (['project_users', 'tasks', 'projects', 'users', 'products'] as $table) {
     try {
         $pdo->exec("TRUNCATE TABLE {$table} RESTART IDENTITY CASCADE;");
     } catch (PDOException $e) {
@@ -122,7 +123,28 @@ foreach ($tasks as $t) {
     ]);
 }
 
-// 6. Seed project_users table
+// 6. Seed products table
+$products = require DUMMIES_PATH . '/products.staticData.php';
+echo "Seeding products…\n";
+$stmt = $pdo->prepare("
+    INSERT INTO products (id, name, description, price, category, stock_quantity, sku, status)
+    VALUES (:id, :name, :description, :price, :category, :stock_quantity, :sku, :status)
+");
+foreach ($products as $p) {
+    $uuid = generate_uuid();
+    $stmt->execute([
+        ':id' => $uuid,
+        ':name' => $p['name'],
+        ':description' => $p['description'],
+        ':price' => $p['price'],
+        ':category' => $p['category'],
+        ':stock_quantity' => $p['stock_quantity'],
+        ':sku' => $p['sku'],
+        ':status' => $p['status'],
+    ]);
+}
+
+// 7. Seed project_users table
 $projectUsers = require DUMMIES_PATH . '/project_users.staticData.php';
 echo "Seeding project_users…\n";
 $stmt = $pdo->prepare("
