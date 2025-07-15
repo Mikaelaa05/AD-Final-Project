@@ -35,6 +35,7 @@ $pdo = new PDO($dsn, $username, $password, [
 // 1. Apply schema for each table (create tables if not exist)
 $models = [
     'database/users.model.sql',
+    'database/products.model.sql',
     'database/projects.model.sql',
     'database/project_users.model.sql',
     'database/tasks.model.sql',
@@ -55,7 +56,7 @@ foreach ($models as $model) {
 
 // 2. Truncate tables (clean all data, restart identity)
 echo "Truncating tables…\n";
-foreach (['project_users', 'tasks', 'projects', 'users'] as $table) {
+foreach (['project_users', 'tasks', 'projects', 'products', 'users'] as $table) {
     try {
         $pdo->exec("TRUNCATE TABLE {$table} RESTART IDENTITY CASCADE;");
     } catch (PDOException $e) {
@@ -67,8 +68,8 @@ foreach (['project_users', 'tasks', 'projects', 'users'] as $table) {
 $users = require DUMMIES_PATH . '/users.staticData.php';
 echo "Seeding users…\n";
 $stmt = $pdo->prepare("
-    INSERT INTO users (id, username, role, first_name, last_name, password)
-    VALUES (:id, :username, :role, :fn, :ln, :pw)
+    INSERT INTO users (id, username, password, first_name, middle_name, last_name, role)
+    VALUES (:id, :username, :password, :first_name, :middle_name, :last_name, :role)
 ");
 $userIds = [];
 foreach ($users as $u) {
@@ -76,15 +77,39 @@ foreach ($users as $u) {
     $stmt->execute([
         ':id' => $uuid,
         ':username' => $u['username'],
+        ':password' => password_hash($u['password'], PASSWORD_DEFAULT),
+        ':first_name' => $u['first_name'],
+        ':middle_name' => $u['middle_name'] ?? null,
+        ':last_name' => $u['last_name'],
         ':role' => $u['role'],
-        ':fn' => $u['first_name'],
-        ':ln' => $u['last_name'],
-        ':pw' => password_hash($u['password'], PASSWORD_DEFAULT),
     ]);
     $userIds[] = $uuid;
 }
 
-// 4. Seed projects table
+// 4. Seed products table
+$products = require DUMMIES_PATH . '/products.staticData.php';
+echo "Seeding products…\n";
+$stmt = $pdo->prepare("
+    INSERT INTO products (id, name, description, category, price, stock_quantity, sku, is_active)
+    VALUES (:id, :name, :description, :category, :price, :stock_quantity, :sku, :is_active)
+");
+$productIds = [];
+foreach ($products as $p) {
+    $uuid = generate_uuid();
+    $stmt->execute([
+        ':id' => $uuid,
+        ':name' => $p['name'],
+        ':description' => $p['description'],
+        ':category' => $p['category'],
+        ':price' => $p['price'],
+        ':stock_quantity' => $p['stock_quantity'],
+        ':sku' => $p['sku'],
+        ':is_active' => $p['is_active'] ? 'true' : 'false'
+    ]);
+    $productIds[] = $uuid;
+}
+
+// 5. Seed projects table
 $projects = require DUMMIES_PATH . '/projects.staticData.php';
 echo "Seeding projects…\n";
 $stmt = $pdo->prepare("
@@ -102,7 +127,7 @@ foreach ($projects as $p) {
     $projectIds[] = $uuid;
 }
 
-// 5. Seed tasks table
+// 6. Seed tasks table
 $tasks = require DUMMIES_PATH . '/tasks.staticData.php';
 echo "Seeding tasks…\n";
 $stmt = $pdo->prepare("
@@ -122,7 +147,7 @@ foreach ($tasks as $t) {
     ]);
 }
 
-// 6. Seed project_users table
+// 7. Seed project_users table
 $projectUsers = require DUMMIES_PATH . '/project_users.staticData.php';
 echo "Seeding project_users…\n";
 $stmt = $pdo->prepare("

@@ -1,5 +1,17 @@
 <?php
-declare(strict_types=1);
+declare(strecho "Dropping old tables…\n";
+foreach (['project_users', 'tasks', 'projects', 'products', 'users'] as $table) {
+    // Use IF EXISTS so it won't error if the table is already gone
+    $pdo->exec("DROP TABLE IF EXISTS {$table} CASCADE;");
+}
+
+$models = [
+    'database/users.model.sql',
+    'database/products.model.sql',
+    'database/projects.model.sql',
+    'database/project_users.model.sql',
+    'database/tasks.model.sql',
+];;
 
 require_once 'vendor/autoload.php';
 require_once 'bootstrap.php';

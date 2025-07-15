@@ -19,6 +19,7 @@ $pdo = new PDO($dsn, $username, $password, [
 // 1. Apply schema for each table (create tables if not exist)
 $models = [
     'database/users.model.sql',
+    'database/products.model.sql',
     'database/projects.model.sql',
     'database/project_users.model.sql',
     'database/tasks.model.sql',
@@ -39,7 +40,7 @@ foreach ($models as $model) {
 
 // 2. Truncate tables (clean all data, restart identity)
 echo "Truncating tables…\n";
-foreach (['project_users', 'tasks', 'projects', 'users'] as $table) {
+foreach (['project_users', 'tasks', 'projects', 'products', 'users'] as $table) {
     try {
         $pdo->exec("TRUNCATE TABLE {$table} RESTART IDENTITY CASCADE;");
     } catch (PDOException $e) {
