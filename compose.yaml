@@ -1,8 +1,8 @@
 services:
-  mikatherock:
+  adfinalproject:
     build:
       context: .
-    container_name: mikatherock-service
+    container_name: adfinalproject-service
     ports:
       - "9000:80"
     develop:
@@ -19,31 +19,31 @@ services:
 
   mongodb:
     image: mongo:latest
-    container_name: mikatherock-mongodb
+    container_name: adfinalproject-mongodb
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootPassword
-      MONGO_INITDB_DATABASE: ad_task3_db
+      MONGO_INITDB_DATABASE: ad_final_project_db
     ports:
       - "27111:27017"
     volumes:
-      - mikatherock-mongodb:/data/db/mongodb
+      - adfinalproject-mongodb:/data/db/mongodb
 
   postgresql:
     image: postgres:15
-    container_name: mikatherock-postgresql
+    container_name: adfinalproject-postgresql
     restart: always
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: ad_task3_db
+      POSTGRES_DB: ad_final_project_db
     ports:
       - "5112:5432"
     volumes:
-      - mikatherock-postgresql:/data/db/postgresql
+      - adfinalproject-postgresql:/data/db/postgresql
 
 volumes:
-  mikatherock-mongodb:
+  adfinalproject-mongodb:
     driver: local
-  mikatherock-postgresql:
+  adfinalproject-postgresql:
     driver: local
