@@ -1,9 +1,9 @@
 {
-    "name": "bumbl/ad-task-3",
+    "name": "bumbl/ad-final-project",
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Bumbl\\AdTask3\\": "src/"
+            "Bumbl\\AdFinalProject\\": "src/"
         }
     },
     "authors": [
