@@ -51,18 +51,20 @@ try {
 // Seed users data
 $users = require DUMMIES_PATH . '/users.staticData.php';
 $stmt = $pdo->prepare("
-    INSERT INTO users (id, username, email, password, first_name, last_name, role, is_active)
-    VALUES (:id, :username, :email, :password, :fn, :ln, :role, :is_active)
+    INSERT INTO users (id, username, email, phone, password, first_name, last_name, role, is_active)
+    VALUES (:id, :username, :email, :phone, :password, :fn, :ln, :role, :is_active)
 ");
 
 $userCount = 0;
 foreach ($users as $u) {
     $uuid = generate_uuid();
-    $email = strtolower($u['username']) . '@adfinalproject.dev';
+    $email = $u['email'] ?? (strtolower($u['username']) . '@adfinalproject.dev');
+    $phone = $u['phone'] ?? null;
     $stmt->execute([
         ':id' => $uuid,
         ':username' => $u['username'],
         ':email' => $email,
+        ':phone' => $phone,
         ':password' => password_hash($u['password'], PASSWORD_DEFAULT),
         ':fn' => $u['first_name'],
         ':ln' => $u['last_name'],

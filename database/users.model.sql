@@ -5,5 +5,8 @@ CREATE TABLE IF NOT EXISTS public."users" (
     last_name varchar(225) NOT NULL,
     password varchar(225) NOT NULL,
     username varchar(225) NOT NULL,
-    role varchar(225) NOT NULL
+    email varchar(255) UNIQUE NOT NULL,
+    phone varchar(20),
+    role varchar(225) NOT NULL,
+    is_active boolean DEFAULT true
 );
