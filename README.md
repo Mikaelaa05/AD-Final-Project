@@ -110,8 +110,8 @@ AD-Final-Project is a modern PHP web application template for rapid development 
 
 ### 1. Clone the repository
 ```sh
-git clone https://github.com/Mikaelaa05/AD-Task-3.git
-cd AD-Task-3
+git clone https://github.com/Mikaelaa05/AD-Final-Project.git
+cd AD-Final-Project
 ```
 
 ### 2. Copy the environment file
