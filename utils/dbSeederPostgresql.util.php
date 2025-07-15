@@ -38,6 +38,8 @@ $models = [
     'database/projects.model.sql',
     'database/project_users.model.sql',
     'database/tasks.model.sql',
+    'database/products.model.sql',
+    'database/couriers.model.sql',
 ];
 
 foreach ($models as $model) {
@@ -55,7 +57,7 @@ foreach ($models as $model) {
 
 // 2. Truncate tables (clean all data, restart identity)
 echo "Truncating tables…\n";
-foreach (['project_users', 'tasks', 'projects', 'users'] as $table) {
+foreach (['project_users', 'tasks', 'projects', 'users', 'products', 'couriers'] as $table) {
     try {
         $pdo->exec("TRUNCATE TABLE {$table} RESTART IDENTITY CASCADE;");
     } catch (PDOException $e) {
@@ -67,8 +69,8 @@ foreach (['project_users', 'tasks', 'projects', 'users'] as $table) {
 $users = require DUMMIES_PATH . '/users.staticData.php';
 echo "Seeding users…\n";
 $stmt = $pdo->prepare("
-    INSERT INTO users (id, username, role, first_name, last_name, password)
-    VALUES (:id, :username, :role, :fn, :ln, :pw)
+    INSERT INTO users (id, username, password, first_name, last_name, corporate_id, role, department, security_clearance, neural_link_id, augmentation_level, contact_frequency, status)
+    VALUES (:id, :username, :password, :first_name, :last_name, :corporate_id, :role, :department, :security_clearance, :neural_link_id, :augmentation_level, :contact_frequency, :status)
 ");
 $userIds = [];
 foreach ($users as $u) {
@@ -76,10 +78,17 @@ foreach ($users as $u) {
     $stmt->execute([
         ':id' => $uuid,
         ':username' => $u['username'],
+        ':password' => password_hash($u['password'], PASSWORD_DEFAULT),
+        ':first_name' => $u['first_name'],
+        ':last_name' => $u['last_name'],
+        ':corporate_id' => $u['corporate_id'],
         ':role' => $u['role'],
-        ':fn' => $u['first_name'],
-        ':ln' => $u['last_name'],
-        ':pw' => password_hash($u['password'], PASSWORD_DEFAULT),
+        ':department' => $u['department'],
+        ':security_clearance' => $u['security_clearance'],
+        ':neural_link_id' => $u['neural_link_id'],
+        ':augmentation_level' => $u['augmentation_level'],
+        ':contact_frequency' => $u['contact_frequency'],
+        ':status' => $u['status'],
     ]);
     $userIds[] = $uuid;
 }
@@ -122,7 +131,51 @@ foreach ($tasks as $t) {
     ]);
 }
 
-// 6. Seed project_users table
+// 6. Seed products table
+$products = require DUMMIES_PATH . '/products.staticData.php';
+echo "Seeding products…\n";
+$stmt = $pdo->prepare("
+    INSERT INTO products (id, name, description, price, category, stock_quantity, sku, status)
+    VALUES (:id, :name, :description, :price, :category, :stock_quantity, :sku, :status)
+");
+foreach ($products as $p) {
+    $uuid = generate_uuid();
+    $stmt->execute([
+        ':id' => $uuid,
+        ':name' => $p['name'],
+        ':description' => $p['description'],
+        ':price' => $p['price'],
+        ':category' => $p['category'],
+        ':stock_quantity' => $p['stock_quantity'],
+        ':sku' => $p['sku'],
+        ':status' => $p['status'],
+    ]);
+}
+
+// 7. Seed couriers table
+$couriers = require DUMMIES_PATH . '/couriers.staticData.php';
+echo "Seeding couriers…\n";
+$stmt = $pdo->prepare("
+    INSERT INTO couriers (id, name, callsign, contact_info, vehicle_type, specialization, status, rating, delivery_zones, security_clearance)
+    VALUES (:id, :name, :callsign, :contact_info, :vehicle_type, :specialization, :status, :rating, :delivery_zones, :security_clearance)
+");
+foreach ($couriers as $c) {
+    $uuid = generate_uuid();
+    $stmt->execute([
+        ':id' => $uuid,
+        ':name' => $c['name'],
+        ':callsign' => $c['callsign'],
+        ':contact_info' => $c['contact_info'],
+        ':vehicle_type' => $c['vehicle_type'],
+        ':specialization' => $c['specialization'],
+        ':status' => $c['status'],
+        ':rating' => $c['rating'],
+        ':delivery_zones' => $c['delivery_zones'],
+        ':security_clearance' => $c['security_clearance'],
+    ]);
+}
+
+// 8. Seed project_users table
 $projectUsers = require DUMMIES_PATH . '/project_users.staticData.php';
 echo "Seeding project_users…\n";
 $stmt = $pdo->prepare("
