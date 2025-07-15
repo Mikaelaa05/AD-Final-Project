@@ -69,8 +69,8 @@ foreach (['project_users', 'tasks', 'projects', 'users', 'products', 'couriers']
 $users = require DUMMIES_PATH . '/users.staticData.php';
 echo "Seeding users…\n";
 $stmt = $pdo->prepare("
-    INSERT INTO users (id, username, role, first_name, last_name, password)
-    VALUES (:id, :username, :role, :fn, :ln, :pw)
+    INSERT INTO users (id, username, password, first_name, last_name, corporate_id, role, department, security_clearance, neural_link_id, augmentation_level, contact_frequency, status)
+    VALUES (:id, :username, :password, :first_name, :last_name, :corporate_id, :role, :department, :security_clearance, :neural_link_id, :augmentation_level, :contact_frequency, :status)
 ");
 $userIds = [];
 foreach ($users as $u) {
@@ -78,10 +78,17 @@ foreach ($users as $u) {
     $stmt->execute([
         ':id' => $uuid,
         ':username' => $u['username'],
+        ':password' => password_hash($u['password'], PASSWORD_DEFAULT),
+        ':first_name' => $u['first_name'],
+        ':last_name' => $u['last_name'],
+        ':corporate_id' => $u['corporate_id'],
         ':role' => $u['role'],
-        ':fn' => $u['first_name'],
-        ':ln' => $u['last_name'],
-        ':pw' => password_hash($u['password'], PASSWORD_DEFAULT),
+        ':department' => $u['department'],
+        ':security_clearance' => $u['security_clearance'],
+        ':neural_link_id' => $u['neural_link_id'],
+        ':augmentation_level' => $u['augmentation_level'],
+        ':contact_frequency' => $u['contact_frequency'],
+        ':status' => $u['status'],
     ]);
     $userIds[] = $uuid;
 }
