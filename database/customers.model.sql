@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS public."customers" (
+    id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
+    customer_code varchar(20) UNIQUE NOT NULL,
+    company_name varchar(255),
+    first_name varchar(150) NOT NULL,
+    last_name varchar(150) NOT NULL,
+    email varchar(255) UNIQUE NOT NULL,
+    phone varchar(20),
+    address_line1 varchar(255),
+    address_line2 varchar(255),
+    city varchar(100),
+    state varchar(100),
+    postal_code varchar(20),
+    country varchar(100) DEFAULT 'USA',
+    customer_type varchar(50) DEFAULT 'individual',
+    credit_limit decimal(12,2) DEFAULT 0.00,
+    total_orders integer DEFAULT 0,
+    total_spent decimal(12,2) DEFAULT 0.00,
+    is_active boolean DEFAULT true,
+    notes text,
+    created_at timestamp DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp DEFAULT CURRENT_TIMESTAMP
+);
