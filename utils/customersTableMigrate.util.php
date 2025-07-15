@@ -4,7 +4,7 @@
  * Creates the customers table in the customers database
  */
 
-require_once '../bootstrap.php';
+require_once __DIR__ . '/../bootstrap.php';
 
 function migrateCustomersTable() {
     try {

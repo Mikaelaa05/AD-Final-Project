@@ -4,7 +4,7 @@
  * Drops and recreates the customers table
  */
 
-require_once '../bootstrap.php';
+require_once __DIR__ . '/../bootstrap.php';
 
 function resetCustomersTable() {
     try {
