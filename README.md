@@ -8,11 +8,11 @@
     <img src="assets/img/Kessoku_Band_Logo_Clear.png" alt="Nyebe" width="130" height="100">
   </a>
 
-  <h3 align="center">AD-Task-3</h3>
+  <h3 align="center">AD-Final-Project</h3>
 </div>
 
 <div align="center">
-  A full-stack PHP + PostgreSQL + MongoDB web application with Dockerized development and user authentication.
+  A full-stack PHP + PostgreSQL + MongoDB web application with Dockerized development and user authentication. (AD-Final-Project)
 </div>
 
 <br/>
@@ -51,7 +51,7 @@
 
 ## Overview
 
-AD-Task-3 is a modern PHP web application template for rapid development with Docker, PostgreSQL, and MongoDB. It features a modular structure, user authentication (login, signup, logout), and a ready-to-use database seeding/migration system. The project is designed for portability—anyone can clone, set up, and run it on their own machine with minimal configuration.
+AD-Final-Project is a modern PHP web application template for rapid development with Docker, PostgreSQL, and MongoDB. It features a modular structure, user authentication (login, signup, logout), and a ready-to-use database seeding/migration system. The project is designed for portability—anyone can clone, set up, and run it on their own machine with minimal configuration.
 
 **Key Features:**
 - User registration, login, and logout with secure password hashing
