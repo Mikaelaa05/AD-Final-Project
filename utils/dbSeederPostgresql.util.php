@@ -39,6 +39,7 @@ $models = [
     'database/project_users.model.sql',
     'database/tasks.model.sql',
     'database/products.model.sql',
+    'database/couriers.model.sql',
 ];
 
 foreach ($models as $model) {
@@ -56,7 +57,7 @@ foreach ($models as $model) {
 
 // 2. Truncate tables (clean all data, restart identity)
 echo "Truncating tables…\n";
-foreach (['project_users', 'tasks', 'projects', 'users', 'products'] as $table) {
+foreach (['project_users', 'tasks', 'projects', 'users', 'products', 'couriers'] as $table) {
     try {
         $pdo->exec("TRUNCATE TABLE {$table} RESTART IDENTITY CASCADE;");
     } catch (PDOException $e) {
@@ -144,7 +145,30 @@ foreach ($products as $p) {
     ]);
 }
 
-// 7. Seed project_users table
+// 7. Seed couriers table
+$couriers = require DUMMIES_PATH . '/couriers.staticData.php';
+echo "Seeding couriers…\n";
+$stmt = $pdo->prepare("
+    INSERT INTO couriers (id, name, callsign, contact_info, vehicle_type, specialization, status, rating, delivery_zones, security_clearance)
+    VALUES (:id, :name, :callsign, :contact_info, :vehicle_type, :specialization, :status, :rating, :delivery_zones, :security_clearance)
+");
+foreach ($couriers as $c) {
+    $uuid = generate_uuid();
+    $stmt->execute([
+        ':id' => $uuid,
+        ':name' => $c['name'],
+        ':callsign' => $c['callsign'],
+        ':contact_info' => $c['contact_info'],
+        ':vehicle_type' => $c['vehicle_type'],
+        ':specialization' => $c['specialization'],
+        ':status' => $c['status'],
+        ':rating' => $c['rating'],
+        ':delivery_zones' => $c['delivery_zones'],
+        ':security_clearance' => $c['security_clearance'],
+    ]);
+}
+
+// 8. Seed project_users table
 $projectUsers = require DUMMIES_PATH . '/project_users.staticData.php';
 echo "Seeding project_users…\n";
 $stmt = $pdo->prepare("
