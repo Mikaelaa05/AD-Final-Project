@@ -35,6 +35,8 @@ $pdo = new PDO($dsn, $username, $password, [
 // 1. Apply schema for each table (create tables if not exist)
 $models = [
     'database/users.model.sql',
+    'database/customers.model.sql',
+    'database/products.model.sql',
     'database/projects.model.sql',
     'database/project_users.model.sql',
     'database/tasks.model.sql',
@@ -55,7 +57,7 @@ foreach ($models as $model) {
 
 // 2. Truncate tables (clean all data, restart identity)
 echo "Truncating tables…\n";
-foreach (['project_users', 'tasks', 'projects', 'users'] as $table) {
+foreach (['project_users', 'tasks', 'projects', 'customers', 'products', 'users'] as $table) {
     try {
         $pdo->exec("TRUNCATE TABLE {$table} RESTART IDENTITY CASCADE;");
     } catch (PDOException $e) {
@@ -84,7 +86,78 @@ foreach ($users as $u) {
     $userIds[] = $uuid;
 }
 
-// 4. Seed projects table
+// 4. Seed customers table
+$customers = require DUMMIES_PATH . '/customers.staticData.php';
+echo "Seeding customers…\n";
+$stmt = $pdo->prepare("
+    INSERT INTO customers (
+        id, customer_code, company_name, first_name, last_name, email, phone,
+        address_line1, address_line2, city, state, postal_code, country,
+        customer_type, credit_limit, total_orders, total_spent, is_active, notes
+    ) VALUES (
+        :id, :customer_code, :company_name, :first_name, :last_name, :email, :phone,
+        :address_line1, :address_line2, :city, :state, :postal_code, :country,
+        :customer_type, :credit_limit, :total_orders, :total_spent, :is_active, :notes
+    )
+");
+$customerIds = [];
+foreach ($customers as $c) {
+    $uuid = generate_uuid();
+    $stmt->execute([
+        ':id' => $uuid,
+        ':customer_code' => $c['customer_code'],
+        ':company_name' => $c['company_name'],
+        ':first_name' => $c['first_name'],
+        ':last_name' => $c['last_name'],
+        ':email' => $c['email'],
+        ':phone' => $c['phone'],
+        ':address_line1' => $c['address_line1'],
+        ':address_line2' => $c['address_line2'],
+        ':city' => $c['city'],
+        ':state' => $c['state'],
+        ':postal_code' => $c['postal_code'],
+        ':country' => $c['country'],
+        ':customer_type' => $c['customer_type'],
+        ':credit_limit' => $c['credit_limit'],
+        ':total_orders' => $c['total_orders'],
+        ':total_spent' => $c['total_spent'],
+        ':is_active' => $c['is_active'] ? 'true' : 'false',
+        ':notes' => $c['notes'],
+    ]);
+    $customerIds[] = $uuid;
+}
+
+// 5. Seed products table
+$products = require DUMMIES_PATH . '/products.staticData.php';
+echo "Seeding products…\n";
+$stmt = $pdo->prepare("
+    INSERT INTO products (
+        id, name, description, category, price, cost, sku, 
+        stock_quantity, weight, is_active
+    ) VALUES (
+        :id, :name, :description, :category, :price, :cost, :sku, 
+        :stock_quantity, :weight, :is_active
+    )
+");
+$productIds = [];
+foreach ($products as $p) {
+    $uuid = generate_uuid();
+    $stmt->execute([
+        ':id' => $uuid,
+        ':name' => $p['name'],
+        ':description' => $p['description'],
+        ':category' => $p['category'],
+        ':price' => $p['price'],
+        ':cost' => $p['cost'],
+        ':sku' => $p['sku'],
+        ':stock_quantity' => $p['stock_quantity'],
+        ':weight' => $p['weight'],
+        ':is_active' => $p['is_active'] ? 'true' : 'false',
+    ]);
+    $productIds[] = $uuid;
+}
+
+// 6. Seed projects table
 $projects = require DUMMIES_PATH . '/projects.staticData.php';
 echo "Seeding projects…\n";
 $stmt = $pdo->prepare("
@@ -102,7 +175,7 @@ foreach ($projects as $p) {
     $projectIds[] = $uuid;
 }
 
-// 5. Seed tasks table
+// 7. Seed tasks table
 $tasks = require DUMMIES_PATH . '/tasks.staticData.php';
 echo "Seeding tasks…\n";
 $stmt = $pdo->prepare("
@@ -122,7 +195,7 @@ foreach ($tasks as $t) {
     ]);
 }
 
-// 6. Seed project_users table
+// 8. Seed project_users table
 $projectUsers = require DUMMIES_PATH . '/project_users.staticData.php';
 echo "Seeding project_users…\n";
 $stmt = $pdo->prepare("
