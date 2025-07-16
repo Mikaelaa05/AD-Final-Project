@@ -1,64 +1,25 @@
 <?php
 /**
  * Customers Table Reset Utility
- * Universal version - works on any device with proper setup
- * 
- * SETUP REQUIREMENTS:
- * 1. Docker and Docker Compose installed
- * 2. .env file with database configuration
- * 3. PostgreSQL container running
- * 
- * USAGE:
- * docker exec [your-container-name] php utils/customersTableReset.util.php
+ * Using exact credentials from compose.yaml
  */
 
-// Check if bootstrap file exists
-$bootstrapPath = __DIR__ . '/../bootstrap.php';
-if (!file_exists($bootstrapPath)) {
-    echo "❌ Error: bootstrap.php not found!\n";
-    echo "   Please ensure you're running this from the project root.\n";
-    exit(1);
-}
-
-require_once $bootstrapPath;
+require_once __DIR__ . '/../bootstrap.php';
 
 function resetCustomersTable() {
     try {
-        // Validate environment configuration
-        $requiredEnvVars = ['POSTGRES_HOST', 'POSTGRES_USER', 'POSTGRES_PASSWORD'];
-        $missingVars = [];
-        
-        foreach ($requiredEnvVars as $var) {
-            if (empty($_ENV[$var])) {
-                $missingVars[] = $var;
-            }
-        }
-        
-        if (!empty($missingVars)) {
-            echo "❌ Missing required environment variables:\n";
-            foreach ($missingVars as $var) {
-                echo "   - $var\n";
-            }
-            echo "\n📋 Please check your .env file contains:\n";
-            echo "   POSTGRES_HOST=postgresql\n";
-            echo "   POSTGRES_USER=your_username\n";
-            echo "   POSTGRES_PASSWORD=your_password\n";
-            echo "   POSTGRES_DB=your_database_name\n";
-            exit(1);
-        }
-
-        // Get database configuration from environment
-        $host = $_ENV['POSTGRES_HOST'];
-        $port = $_ENV['POSTGRES_PORT'] ?? '5432';
-        $username = $_ENV['POSTGRES_USER'];
-        $password = $_ENV['POSTGRES_PASSWORD'];
-        $database = $_ENV['POSTGRES_DB'] ?? 'ad_final_project_db';
+        // Use exact credentials from your compose.yaml
+        $host = 'postgresql';  // Container name from compose.yaml
+        $port = '5432';        // Internal container port
+        $username = 'user';    // POSTGRES_USER from compose.yaml
+        $password = 'password'; // POSTGRES_PASSWORD from compose.yaml
+        $database = 'ad_final_project_db'; // POSTGRES_DB from compose.yaml
 
         echo "🔄 Connecting to PostgreSQL...\n";
         echo "   Host: $host\n";
         echo "   Port: $port\n";
         echo "   Database: $database\n";
-        echo "   User: $username\n\n";
+        echo "   Username: $username\n\n";
 
         // Create PDO connection
         $dsn = "pgsql:host=$host;port=$port;dbname=$database";
@@ -74,25 +35,24 @@ function resetCustomersTable() {
         $pdo->exec('DROP TABLE IF EXISTS customers CASCADE');
         echo "   ✅ Dropped existing customers table\n";
 
-        // Read customers model SQL
-        $modelPath = __DIR__ . '/../database/customers.model.sql';
-        if (!file_exists($modelPath)) {
-            echo "❌ Error: customers.model.sql not found!\n";
-            echo "   Expected location: $modelPath\n";
-            echo "   Please ensure the customers model file exists.\n";
-            exit(1);
-        }
+        // Create customers table schema
+        $sql = "
+        CREATE TABLE IF NOT EXISTS customers (
+            id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
+            name varchar(255) NOT NULL,
+            email varchar(255) UNIQUE NOT NULL,
+            phone varchar(20),
+            address text,
+            created_at timestamp DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamp DEFAULT CURRENT_TIMESTAMP
+        );
+        
+        CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
+        CREATE INDEX IF NOT EXISTS idx_customers_name ON customers(name);
+        ";
 
-        $sql = file_get_contents($modelPath);
-        if (empty($sql)) {
-            echo "❌ Error: customers.model.sql is empty!\n";
-            echo "   Please check the SQL file contains valid table definition.\n";
-            exit(1);
-        }
-
-        // Create table
         $pdo->exec($sql);
-        echo "   ✅ Created customers table from schema\n";
+        echo "   ✅ Created customers table with schema\n";
 
         // Verify table creation
         $result = $pdo->query("SELECT COUNT(*) as count FROM customers");
@@ -100,20 +60,12 @@ function resetCustomersTable() {
 
         echo "\n🎉 Customers table reset successful!\n";
         echo "   📊 Current records: $count\n";
-        echo "   🗂️  Table structure: customers\n";
-        echo "\n💡 Next steps:\n";
-        echo "   1. Run seeder: php utils/customersTableSeeder.util.php\n";
-        echo "   2. Verify data: php utils/customersTableVerify.util.php\n\n";
+        echo "   🎯 Ready for seeding!\n";
 
         return true;
 
     } catch (PDOException $e) {
-        echo "❌ Database Error: " . $e->getMessage() . "\n\n";
-        echo "🔧 Troubleshooting:\n";
-        echo "   1. Check if PostgreSQL container is running: docker ps\n";
-        echo "   2. Verify .env configuration matches docker-compose.yaml\n";
-        echo "   3. Ensure database exists: $database\n";
-        echo "   4. Test connection: docker exec [container] psql -U [user] -d [database]\n\n";
+        echo "❌ Database Error: " . $e->getMessage() . "\n";
         return false;
     } catch (Exception $e) {
         echo "❌ General Error: " . $e->getMessage() . "\n";
@@ -121,31 +73,17 @@ function resetCustomersTable() {
     }
 }
 
-// Show usage information
-echo "=".str_repeat("=", 60)."=\n";
-echo "  CUSTOMERS TABLE RESET UTILITY - UNIVERSAL VERSION\n";
-echo "=".str_repeat("=", 60)."=\n\n";
+echo "=".str_repeat("=", 50)."=\n";
+echo "  CUSTOMERS TABLE RESET UTILITY\n";
+echo "=".str_repeat("=", 50)."=\n\n";
 
-echo "📋 System Requirements Check:\n";
-echo "   ✅ PHP: " . PHP_VERSION . "\n";
-echo "   ✅ PDO PostgreSQL: " . (extension_loaded('pdo_pgsql') ? 'Available' : '❌ Missing') . "\n";
-
-if (!extension_loaded('pdo_pgsql')) {
-    echo "\n❌ PDO PostgreSQL extension is required!\n";
-    echo "   Please install php-pgsql extension.\n";
-    exit(1);
-}
-
-echo "\n🚀 Starting customers table reset...\n\n";
-
-// Run the reset function
 $success = resetCustomersTable();
 
 if ($success) {
     echo "✅ Reset completed successfully!\n";
     exit(0);
 } else {
-    echo "❌ Reset failed! Please check errors above.\n";
+    echo "❌ Reset failed!\n";
     exit(1);
 }
 ?>

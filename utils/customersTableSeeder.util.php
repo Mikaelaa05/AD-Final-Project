@@ -9,10 +9,10 @@ require_once __DIR__ . '/../bootstrap.php';
 function seedCustomersTable() {
     try {
         // Connect to main database (customers table is in the same DB)
-        $host = $_ENV['POSTGRES_HOST'] ?? 'localhost';
-        $port = $_ENV['POSTGRES_PORT'] ?? '5432';
-        $username = $_ENV['POSTGRES_USER'] ?? 'user';
-        $password = $_ENV['POSTGRES_PASSWORD'] ?? 'password';
+        $host = $_ENV['PG_HOST'] ?? $_ENV['POSTGRES_HOST'] ?? 'postgresql';
+        $port = $_ENV['PG_PORT'] ?? $_ENV['POSTGRES_PORT'] ?? '5432';
+        $username = $_ENV['PG_USER'] ?? $_ENV['POSTGRES_USER'] ?? 'user';
+        $password = $_ENV['PG_PASS'] ?? $_ENV['POSTGRES_PASSWORD'] ?? 'password';
         
         $pdo = new PDO(
             "pgsql:host=$host;port=$port;dbname=ad_final_project_db",
