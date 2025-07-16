@@ -16,20 +16,20 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
-require_once BASE_PATH . '/components/navbar.component.php';
 ?>
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <title>Dashboard</title>
-    </head>
+<head>
+    <title>Dashboard</title>
+</head>
 
-    <body>
-        <h1>Welcome, <?= htmlspecialchars($user['first_name']) ?>!</h1>
-        <p>Your role: <?= htmlspecialchars($user['role']) ?></p>
-        <a href="/handlers/logout.handler.php">Logout</a>
-        <?php require_once BASE_PATH . '/components/footer.component.php'; ?>
-    </body>
+<body>
+    <?php require_once BASE_PATH . '/components/header.component.php'; ?>
+    <h1>Welcome, <?= htmlspecialchars($user['first_name']) ?>!</h1>
+    <p>Your role: <?= htmlspecialchars($user['role']) ?></p>
+    <a href="/handlers/logout.handler.php">Logout</a>
+    <?php require_once BASE_PATH . '/components/footer.component.php'; ?>
+</body>
 
 </html>
