@@ -1,8 +1,8 @@
 <?php
-include BASE_PATH . '/components/navbar.component.php';
+include BASE_PATH . '/components/header.component.php';
 ?>
 <main>
-    <?php include $content; ?>
+    <?php echo $content; ?>
 </main>
 <?php
 include BASE_PATH . '/components/footer.component.php';

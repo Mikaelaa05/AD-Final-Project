@@ -16,6 +16,15 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
+
+// Define the content for the layout
+ob_start();
+?>
+<h1>Welcome, <?= htmlspecialchars($user['first_name']) ?>!</h1>
+<p>Your role: <?= htmlspecialchars($user['role']) ?></p>
+<a href="/handlers/logout.handler.php">Logout</a>
+<?php
+$content = ob_get_clean();
 ?>
 <!DOCTYPE html>
 <html>
@@ -25,11 +34,7 @@ $user = $_SESSION['user'];
 </head>
 
 <body>
-    <?php require_once BASE_PATH . '/components/header.component.php'; ?>
-    <h1>Welcome, <?= htmlspecialchars($user['first_name']) ?>!</h1>
-    <p>Your role: <?= htmlspecialchars($user['role']) ?></p>
-    <a href="/handlers/logout.handler.php">Logout</a>
-    <?php require_once BASE_PATH . '/components/footer.component.php'; ?>
+    <?php include BASE_PATH . '/layouts/main.layout.php'; ?>
 </body>
 
 </html>
