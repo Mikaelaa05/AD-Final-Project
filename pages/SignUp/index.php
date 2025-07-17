@@ -57,7 +57,6 @@ ob_start();
     <input name="first_name" placeholder="First Name" required>
     <input name="last_name" placeholder="Last Name" required>
     <input name="password" type="password" placeholder="Password" required>
-    <input name="role" placeholder="Role (optional, default: user)">
     <button type="submit">Register</button>
 </form>
 <?php
@@ -69,7 +68,7 @@ if (isset($success))
 <a href="/pages/Login/index.php">Back to Login</a>
 <?php
 $content = ob_get_clean();
-
+//TODO Backen, fix Signup please
 // Include the auth layout
 include BASE_PATH . '/layouts/auth.layout.php';
 ?>
