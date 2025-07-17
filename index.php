@@ -20,9 +20,13 @@ $user = $_SESSION['user'];
 // Define the content for the layout
 ob_start();
 ?>
-<h1>Welcome, <?= htmlspecialchars($user['first_name']) ?>!</h1>
-<p>Your role: <?= htmlspecialchars($user['role']) ?></p>
-<a href="/handlers/logout.handler.php">Logout</a>
+<div class="dashboard-welcome">
+    <h1>Welcome, <?= htmlspecialchars($user['first_name']) ?>!</h1>
+    <p>Your role: <?= htmlspecialchars($user['role']) ?></p>
+    <div class="dashboard-actions">
+        <a href="/handlers/logout.handler.php" class="logout">Logout</a>
+    </div>
+</div>
 <?php
 $content = ob_get_clean();
 ?>
@@ -31,6 +35,9 @@ $content = ob_get_clean();
 
 <head>
     <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
 </head>
 
 <body>
