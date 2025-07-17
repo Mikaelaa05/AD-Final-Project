@@ -1,5 +1,12 @@
 <?php
 
+function isAuthenticated(): bool
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    return isset($_SESSION['user']) && !empty($_SESSION['user']);
+}
 
 function findUserByUsername(PDO $pdo, string $username)
 {
