@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../bootstrap.php';
-require_once BASE_PATH . '/utils/auth.util.php';
+require_once UTILS_PATH . '/auth.util.php';
 require_once UTILS_PATH . '/envSetter.util.php';
 
 ini_set('display_errors', 1);
@@ -70,5 +70,5 @@ if (isset($success))
 $content = ob_get_clean();
 //TODO Backen, fix Signup please
 // Include the auth layout
-include BASE_PATH . '/layouts/auth.layout.php';
+include LAYOUTS_PATH . '/auth.layout.php';
 ?>

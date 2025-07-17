@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../bootstrap.php';
-require_once BASE_PATH . '/handlers/auth.handler.php';
+require_once HANDLERS_PATH . '/auth.handler.php';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -31,5 +31,5 @@ ob_start();
 $content = ob_get_clean();
 
 // Include the auth layout
-include BASE_PATH . '/layouts/auth.layout.php';
+include LAYOUTS_PATH . '/auth.layout.php';
 ?>

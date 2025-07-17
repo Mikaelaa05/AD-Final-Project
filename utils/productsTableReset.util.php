@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-require_once 'vendor/autoload.php';
-require_once 'bootstrap.php';
+require_once BASE_PATH . '/vendor/autoload.php';
+require_once __DIR__ . '/../bootstrap.php';
 require_once UTILS_PATH . '/envSetter.util.php';
 
 $host = $typeConfig['pgHost'];
@@ -19,7 +19,7 @@ $pdo = new PDO($dsn, $username, $password, [
 echo "🧹 Resetting products table…\n";
 
 // Create table if not exists
-$sql = file_get_contents('database/products.model.sql');
+$sql = file_get_contents(DATABASE_PATH . '/products.model.sql');
 if ($sql === false) {
     throw new RuntimeException("❌ Could not read products.model.sql");
 }

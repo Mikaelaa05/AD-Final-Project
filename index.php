@@ -5,13 +5,13 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/bootstrap.php';
-require_once BASE_PATH . '/handlers/mongodbChecker.handler.php';
-require_once BASE_PATH . '/handlers/postgreChecker.handler.php';
+require_once HANDLERS_PATH . '/mongodbChecker.handler.php';
+require_once HANDLERS_PATH . '/postgreChecker.handler.php';
 
 session_start();
 
 if (!isset($_SESSION['user'])) {
-    include BASE_PATH . '/errors/unauthorized.error.php';
+    include ERRORS_PATH . '/unauthorized.error.php';
     exit;
 }
 
@@ -41,7 +41,7 @@ $content = ob_get_clean();
 </head>
 
 <body>
-    <?php include BASE_PATH . '/layouts/main.layout.php'; ?>
+    <?php include LAYOUTS_PATH . '/main.layout.php'; ?>
 </body>
 
 </html>

@@ -5,5 +5,5 @@
  */
 ?>
 <header>
-    <?php include BASE_PATH . '/components/navbar.component.php'; ?>
+    <?php include COMPONENTS_PATH . '/navbar.component.php'; ?>
 </header>

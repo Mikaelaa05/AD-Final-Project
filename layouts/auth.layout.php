@@ -19,7 +19,7 @@
     <div class="auth-container">
         <?php echo $content; ?>
     </div>
-    <?php include BASE_PATH . '/components/footer.component.php'; ?>
+    <?php include COMPONENTS_PATH . '/footer.component.php'; ?>
 </body>
 
 </html>

@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-require_once 'vendor/autoload.php';
-require_once 'bootstrap.php';
+require_once BASE_PATH . '/vendor/autoload.php';
+require_once __DIR__ . '/../bootstrap.php';
 require_once UTILS_PATH . '/envSetter.util.php';
 
 $host = $typeConfig['pgHost'];
@@ -23,7 +23,7 @@ echo "Dropping existing products table if it exists…\n";
 $pdo->exec("DROP TABLE IF EXISTS products CASCADE;");
 
 // Apply products schema
-$sql = file_get_contents('database/products.model.sql');
+$sql = file_get_contents(DATABASE_PATH . '/products.model.sql');
 if ($sql === false) {
     throw new RuntimeException("❌ Could not read products.model.sql");
 }
