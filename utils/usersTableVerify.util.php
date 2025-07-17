@@ -28,19 +28,19 @@ try {
         )
     ");
     $tableExists = $result->fetchColumn();
-    
+
     if (!$tableExists) {
         echo "❌ Users table does not exist!\n";
         exit(1);
     }
-    
+
     echo "✅ Users table exists\n";
-    
+
     // Get total user count
     $result = $pdo->query("SELECT COUNT(*) FROM users");
     $totalUsers = $result->fetchColumn();
     echo "📊 Total users: {$totalUsers}\n";
-    
+
     if ($totalUsers > 0) {
         // User role breakdown
         echo "\n📈 User Role Breakdown:\n";
@@ -52,11 +52,11 @@ try {
             GROUP BY role
             ORDER BY count DESC
         ");
-        
+
         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
             echo "  - {$row['role']}: {$row['count']} users\n";
         }
-        
+
         // Sample user data
         echo "\n📝 Sample User Records:\n";
         $result = $pdo->query("
@@ -68,16 +68,16 @@ try {
             FROM users 
             LIMIT 5
         ");
-        
+
         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
             echo "  • {$row['username']}: {$row['first_name']} {$row['last_name']} ({$row['role']})\n";
         }
     } else {
         echo "⚠️  No users found in database\n";
     }
-    
+
     echo "✅ Users database verification complete!\n";
-    
+
 } catch (PDOException $e) {
     echo "❌ Database error: " . $e->getMessage() . "\n";
     exit(1);
