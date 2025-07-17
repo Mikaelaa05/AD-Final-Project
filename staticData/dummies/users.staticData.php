@@ -5,7 +5,7 @@ return [
         'first_name' => 'Boris',
         'last_name' => 'Dela Cruz',
         'password' => 'admin',
-        'email' => 'borisdc@email.com',
+        'email' => '202311499@fit.edu.ph',
         'phone' => '09123456789',
         'role' => 'Database Manager'
     ],
@@ -14,7 +14,7 @@ return [
         'first_name' => 'Mikaela Andrea',
         'last_name' => 'Cid',
         'password' => 'admin',
-        'email' => 'mikaela.cid@gmail.com',
+        'email' => '202310289@fit.edu.ph',
         'phone' => '09876543210',
         'role' => 'Quality Assurance Manager'
     ],
@@ -23,7 +23,7 @@ return [
         'first_name' => 'Jan-Michael II',
         'last_name' => 'Laguesma',
         'password' => 'admin',
-        'email' => 'micjolaguesma@gmail.com',
+        'email' => '202312061@fit.edu.ph',
         'phone' => '09234567891',
         'role' => 'Backend'
     ],
@@ -32,7 +32,7 @@ return [
         'first_name' => 'Baron Jamille',
         'last_name' => 'Andres',
         'password' => 'admin',
-        'email' => 'mung.andres@gmail.com',
+        'email' => '202311934@fit.edu.ph',
         'phone' => '09345678912',
         'role' => 'Designer'
     ],
@@ -41,7 +41,7 @@ return [
         'first_name' => 'Syrrlian',
         'last_name' => 'Castro',
         'password' => 'admin',
-        'email' => 'punzubzero@email.com',
+        'email' => '202312208@fit.edu.ph',
         'phone' => '09456789123',
         'role' => 'Front-End Developer'
     ]

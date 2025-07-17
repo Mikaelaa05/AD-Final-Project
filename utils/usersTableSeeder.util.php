@@ -1,91 +1,147 @@
 <?php
 declare(strict_types=1);
+/**
+ * Users Table Seeder Utility
+ * Seeds the users table with team member data
+ */
 
-require_once 'vendor/autoload.php';
-require_once 'bootstrap.php';
-require_once UTILS_PATH . '/envSetter.util.php';
+require_once __DIR__ . '/../bootstrap.php';
 
-// Helper to generate UUID v4
-function generate_uuid()
-{
-    return sprintf(
-        '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0x0fff) | 0x4000,
-        mt_rand(0, 0x3fff) | 0x8000,
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff)
-    );
+function seedUsersTable() {
+    try {
+        // Use your .env configuration
+        $host = $_ENV['PG_HOST'] ?? 'postgresql';
+        $port = $_ENV['PG_PORT'] ?? '5432';
+        $username = $_ENV['PG_USER'] ?? 'user';
+        $password = $_ENV['PG_PASS'] ?? 'password';
+        $database = $_ENV['PG_DB'] ?? 'ad_final_project_db';
+        
+        $pdo = new PDO(
+            "pgsql:host=$host;port=$port;dbname=$database",
+            $username,
+            $password,
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+        );
+
+        echo "🌱 Seeding users table with team data...\n\n";
+
+        // Clear existing data
+        $pdo->exec("TRUNCATE TABLE users RESTART IDENTITY CASCADE;");
+        echo "   ✅ Cleared existing user data\n";
+
+        // Load user data from static file
+        $usersFile = __DIR__ . '/../staticData/dummies/users.staticData.php';
+        
+        if (!file_exists($usersFile)) {
+            echo "❌ Users static data file not found!\n";
+            echo "   Expected: $usersFile\n";
+            return false;
+        }
+
+        $users = require $usersFile;
+
+        if (empty($users)) {
+            echo "❌ No user data found in static file!\n";
+            // Use hardcoded data as fallback
+            $users = [
+                [
+                    'username' => 'H1H3',
+                    'first_name' => 'Boris',
+                    'last_name' => 'Dela Cruz',
+                    'password' => 'admin',
+                    'email' => '202311499@fit.edu.ph',
+                    'phone' => '09123456789',
+                    'role' => 'Database Manager'
+                ],
+                [
+                    'username' => 'MikaTheRock',
+                    'first_name' => 'Mikaela Andrea',
+                    'last_name' => 'Cid',
+                    'password' => 'admin',
+                    'email' => '202310289@fit.edu.ph',
+                    'phone' => '09876543210',
+                    'role' => 'Quality Assurance Manager'
+                ],
+                [
+                    'username' => 'SusPeekZ',
+                    'first_name' => 'Jan-Michael II',
+                    'last_name' => 'Laguesma',
+                    'password' => 'admin',
+                    'email' => '202312061@fit.edu.ph',
+                    'phone' => '09234567891',
+                    'role' => 'Backend'
+                ],
+                [
+                    'username' => 'Jam',
+                    'first_name' => 'Baron Jamille',
+                    'last_name' => 'Andres',
+                    'password' => 'admin',
+                    'email' => '202311934@fit.edu.ph',
+                    'phone' => '09345678912',
+                    'role' => 'Designer'
+                ],
+                [
+                    'username' => 'Waffle',
+                    'first_name' => 'Syrrlian',
+                    'last_name' => 'Castro',
+                    'password' => 'admin',
+                    'email' => '202312208@fit.edu.ph',
+                    'phone' => '09456789123',
+                    'role' => 'Front-End Developer'
+                ]
+            ];
+            echo "   📋 Using hardcoded FIT email data\n";
+        }
+
+        // Insert users
+        $stmt = $pdo->prepare("
+            INSERT INTO users (username, first_name, last_name, password, email, phone, role) 
+            VALUES (:username, :first_name, :last_name, :password, :email, :phone, :role)
+        ");
+
+        $insertedCount = 0;
+        foreach ($users as $user) {
+            // Hash the password
+            $hashedPassword = password_hash($user['password'], PASSWORD_BCRYPT);
+            
+            $stmt->execute([
+                'username' => $user['username'],
+                'first_name' => $user['first_name'],
+                'last_name' => $user['last_name'],
+                'password' => $hashedPassword,
+                'email' => $user['email'],
+                'phone' => $user['phone'],
+                'role' => $user['role']
+            ]);
+            
+            $insertedCount++;
+            echo "👤 ✅ {$user['first_name']} {$user['last_name']} ({$user['username']}) - {$user['email']}\n";
+        }
+
+        echo "\n🎉 Successfully seeded $insertedCount team members!\n";
+        echo "💡 All team members can login with password: 'admin'\n";
+
+        return true;
+
+    } catch (PDOException $e) {
+        echo "❌ Database error: " . $e->getMessage() . "\n";
+        return false;
+    } catch (Exception $e) {
+        echo "❌ Seeding failed: " . $e->getMessage() . "\n";
+        return false;
+    }
 }
 
-$host = $typeConfig['pgHost'];
-$port = $typeConfig['pgPort'];
-$username = $typeConfig['pgUser'];
-$password = $typeConfig['pgPass'];
-$dbname = $typeConfig['pgDb'];
+echo "=" . str_repeat("=", 60) . "=\n";
+echo "  USERS TABLE SEEDER UTILITY\n";
+echo "=" . str_repeat("=", 60) . "=\n\n";
 
-$dsn = "pgsql:host={$host};port={$port};dbname={$dbname}";
-$pdo = new PDO($dsn, $username, $password, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-]);
+$success = seedUsersTable();
 
-echo "🌱 Seeding users table…\n";
-
-// Create table if not exists
-$sql = file_get_contents('database/users.model.sql');
-if ($sql === false) {
-    throw new RuntimeException("❌ Could not read users.model.sql");
-}
-$pdo->exec($sql);
-
-// Clear existing data
-try {
-    $pdo->exec("TRUNCATE TABLE users RESTART IDENTITY CASCADE;");
-} catch (PDOException $e) {
-    echo "Warning: Could not truncate users table: " . $e->getMessage() . "\n";
-}
-
-// Seed users data
-$users = require DUMMIES_PATH . '/users.staticData.php';
-$stmt = $pdo->prepare("
-    INSERT INTO users (id, username, email, phone, password, first_name, last_name, role, is_active)
-    VALUES (:id, :username, :email, :phone, :password, :fn, :ln, :role, :is_active)
-");
-
-$userCount = 0;
-foreach ($users as $u) {
-    $uuid = generate_uuid();
-    $email = $u['email'] ?? (strtolower($u['username']) . '@adfinalproject.dev');
-    $phone = $u['phone'] ?? null;
-    $stmt->execute([
-        ':id' => $uuid,
-        ':username' => $u['username'],
-        ':email' => $email,
-        ':phone' => $phone,
-        ':password' => password_hash($u['password'], PASSWORD_DEFAULT),
-        ':fn' => $u['first_name'],
-        ':ln' => $u['last_name'],
-        ':role' => $u['role'],
-        ':is_active' => true,
-    ]);
-    $userCount++;
-}
-
-echo "✅ Successfully seeded {$userCount} users!\n";
-
-// Display seeded data summary
-echo "\n📊 Users Database Summary:\n";
-$result = $pdo->query("
-    SELECT 
-        role,
-        COUNT(*) as count
-    FROM users 
-    GROUP BY role
-");
-
-while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-    echo "- {$row['role']}: {$row['count']} users\n";
+if ($success) {
+    echo "✅ Seeding completed successfully!\n";
+    exit(0);
+} else {
+    echo "❌ Seeding failed!\n";
+    exit(1);
 }
