@@ -6,7 +6,8 @@
 
 require_once __DIR__ . '/../bootstrap.php';
 
-function migrateCustomersTable() {
+function migrateCustomersTable()
+{
     try {
         // Use your .env configuration
         $host = $_ENV['PG_HOST'] ?? 'postgresql';
@@ -29,31 +30,31 @@ function migrateCustomersTable() {
         echo "✅ Database connection successful!\n\n";
 
         // Read and execute the model file
-        $modelPath = __DIR__ . '/../database/customers.model.sql';
-        
+        $modelPath = DATABASE_PATH . '/customers.model.sql';
+
         if (!file_exists($modelPath)) {
             echo "❌ Model file not found: $modelPath\n";
             return false;
         }
 
         $sql = file_get_contents($modelPath);
-        
+
         if (empty($sql)) {
             echo "❌ Model file is empty!\n";
             return false;
         }
 
         echo "📋 Executing customers model SQL...\n";
-        
+
         // Execute the model SQL
         $pdo->exec($sql);
-        
+
         echo "   ✅ Customers table schema applied\n";
         echo "   ✅ Indexes created (email, name)\n";
 
         // Verify the migration
         echo "\n🔍 Verifying migration...\n";
-        
+
         // Check table structure
         $columns = $pdo->query("
             SELECT column_name, data_type, is_nullable, column_default
@@ -101,9 +102,9 @@ function migrateCustomersTable() {
     }
 }
 
-echo "=".str_repeat("=", 60)."=\n";
+echo "=" . str_repeat("=", 60) . "=\n";
 echo "  CUSTOMERS TABLE MIGRATION UTILITY\n";
-echo "=".str_repeat("=", 60)."=\n\n";
+echo "=" . str_repeat("=", 60) . "=\n\n";
 
 echo "🚀 Starting customers table migration...\n\n";
 $success = migrateCustomersTable();

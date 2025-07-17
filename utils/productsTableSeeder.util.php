@@ -35,7 +35,7 @@ $pdo = new PDO($dsn, $username, $password, [
 echo "🌱 Seeding products table…\n";
 
 // Create table if not exists
-$sql = file_get_contents('database/products.model.sql');
+$sql = file_get_contents(DATABASE_PATH . '/products.model.sql');
 if ($sql === false) {
     throw new RuntimeException("❌ Could not read products.model.sql");
 }
