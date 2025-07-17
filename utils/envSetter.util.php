@@ -1,6 +1,6 @@
 <?php
 
-require_once BASE_PATH . '/bootstrap.php';
+// Bootstrap should already be loaded when this file is included
 require_once BASE_PATH . '/vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH);
