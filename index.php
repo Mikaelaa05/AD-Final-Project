@@ -5,8 +5,6 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/bootstrap.php';
-require_once HANDLERS_PATH . '/mongodbChecker.handler.php';
-require_once HANDLERS_PATH . '/postgreChecker.handler.php';
 
 session_start();
 
