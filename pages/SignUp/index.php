@@ -44,31 +44,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $success = "Registration successful! You can now <a href='/pages/Login/index.php'>login</a>.";
     }
 }
+
+// Set page title for the layout
+$pageTitle = 'Register';
+
+// Define the content for the layout
+ob_start();
 ?>
-<!DOCTYPE html>
-<html>
+<h2>Sign Up</h2>
+<form method="POST">
+    <input name="username" placeholder="Username" required>
+    <input name="first_name" placeholder="First Name" required>
+    <input name="last_name" placeholder="Last Name" required>
+    <input name="password" type="password" placeholder="Password" required>
+    <input name="role" placeholder="Role (optional, default: user)">
+    <button type="submit">Register</button>
+</form>
+<?php
+if (isset($error))
+    echo "<p style='color:red;'>$error</p>";
+if (isset($success))
+    echo "<p style='color:green;'>$success</p>";
+?>
+<a href="/pages/Login/index.php">Back to Login</a>
+<?php
+$content = ob_get_clean();
 
-    <head>
-        <title>Register</title>
-    </head>
-
-    <body>
-        <h2>Sign Up</h2>
-        <form method="POST">
-            <input name="username" placeholder="Username" required>
-            <input name="first_name" placeholder="First Name" required>
-            <input name="last_name" placeholder="Last Name" required>
-            <input name="password" type="password" placeholder="Password" required>
-            <input name="role" placeholder="Role (optional, default: user)">
-            <button type="submit">Register</button>
-        </form>
-        <?php
-        if (isset($error))
-            echo "<p style='color:red;'>$error</p>";
-        if (isset($success))
-            echo "<p style='color:green;'>$success</p>";
-        ?>
-        <a href="/pages/Login/index.php">Back to Login</a>
-    </body>
-
-</html>
+// Include the auth layout
+include BASE_PATH . '/layouts/auth.layout.php';
+?>
