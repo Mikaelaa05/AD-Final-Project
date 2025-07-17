@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-require_once BASE_PATH . '/vendor/autoload.php';
 require_once __DIR__ . '/../bootstrap.php';
+require_once BASE_PATH . '/vendor/autoload.php';
 require_once UTILS_PATH . '/envSetter.util.php';
 
 $host = $typeConfig['pgHost'];
