@@ -20,7 +20,7 @@ $content = '
     <section class="about-hero">
         <div class="hero-content">
             <h1 class="company-title"><span class="red-text">SIN</span>THESIZE Corp.</h1>
-            <p class="company-tagline">[Your innovative tagline here]</p>
+            <p class="company-tagline">We don\'t write tragedies, we write SINS.</p>
         </div>
     </section>
 
@@ -30,13 +30,13 @@ $content = '
             <h2>ABOUT OUR COMPANY</h2>
             <div class="description-content">
                 <p class="lead-text">
-                    [Insert compelling company description here. Talk about your mission, vision, and what makes your company unique in the industry.]
+                    At SINTHESIZE Corp., we don\'t follow conventional paths. We forge new realities through cutting-edge technology and uncompromising innovation. Where others see limitations, we see opportunities to transcend boundaries.
                 </p>
                 <p>
-                    [Add more details about your company history, values, and achievements. This section should give visitors a clear understanding of who you are and what you stand for.]
+                    Founded on the principle that true innovation requires breaking the rules, SINTHESIZE specializes in developing revolutionary digital solutions that challenge the status quo. Our team of elite developers, designers, and visionaries work in the shadows of the tech world, crafting experiences that blur the line between reality and digital artistry.
                 </p>
                 <p>
-                    [Include information about your products/services, your commitment to quality, and how you serve your customers.]
+                    We believe in the power of controlled chaos, turning complex problems into elegant solutions, transforming ordinary projects into extraordinary digital symphonies. Every line of code we write, every interface we design, carries the mark of our relentless pursuit of perfection in an imperfect world.
                 </p>
             </div>
         </div>
@@ -52,13 +52,13 @@ $content = '
                 <!-- Team Member 1 -->
                 <div class="team-member">
                     <div class="member-photo">
-                        <img src="/assets/img/Boris.jpg" alt="Boris Dela Cruz" onerror="this.style.display=\'none\'" />
+                        <img src="/pages/About/assets/img/Boris.jpg" alt="Boris Dela Cruz" onerror="this.style.display=\'none\'" />
                     </div>
                     <div class="member-info">
                         <h3 class="member-name">Boris Dela Cruz</h3>
                         <p class="member-title">Database Manager</p>
                         <p class="member-description">
-                            Expert database architect responsible for designing and maintaining our data infrastructure. Boris ensures optimal performance and security across all database systems.
+                            Expert database architect responsible for designing and maintaining our database. Boris ensures optimal performance and security across all database systems.
                         </p>
                         <div class="member-contact">
                             <p class="contact-email">✉️ borisdc@email.com</p>
@@ -69,7 +69,7 @@ $content = '
                 <!-- Team Member 2 -->
                 <div class="team-member">
                     <div class="member-photo">
-                        <img src="/assets/img/Mika.jpg" alt="Mikaela Andrea Cid" onerror="this.style.display=\'none\'" />
+                        <img src="/pages/About/assets/img/Mika.jpg" alt="Mikaela Andrea Cid" onerror="this.style.display=\'none\'" />
                     </div>
                     <div class="member-info">
                         <h3 class="member-name">Mikaela Andrea Cid</h3>
@@ -86,11 +86,11 @@ $content = '
                 <!-- Team Member 3 -->
                 <div class="team-member">
                     <div class="member-photo">
-                        <img src="/assets/img/JM.jpg" alt="Jan-Michael II Laguesma" onerror="this.style.display=\'none\'" />
+                        <img src="/pages/About/assets/img/JM.jpg" alt="Jan-Michael II Laguesma" onerror="this.style.display=\'none\'" />
                     </div>
                     <div class="member-info">
                         <h3 class="member-name">Jan-Michael II Laguesma</h3>
-                        <p class="member-title">Backend Developer</p>
+                        <p class="member-title">Back-end Developer</p>
                         <p class="member-description">
                             Skilled backend engineer developing robust server-side solutions and APIs. Jan-Michael builds the core functionality that powers our applications.
                         </p>
@@ -103,7 +103,7 @@ $content = '
                 <!-- Team Member 4 -->
                 <div class="team-member">
                     <div class="member-photo">
-                        <img src="/assets/img/Jam.jpg" alt="Baron Jamille Andres" onerror="this.style.display=\'none\'" />
+                        <img src="/pages/About/assets/img/Jam.jpg" alt="Baron Jamille Andres" onerror="this.style.display=\'none\'" />
                     </div>
                     <div class="member-info">
                         <h3 class="member-name">Baron Jamille Andres</h3>
@@ -120,7 +120,7 @@ $content = '
                 <!-- Team Member 5 -->
                 <div class="team-member">
                     <div class="member-photo">
-                        <img src="/assets/img/Castro.JPG" alt="Syrrlian Castro" onerror="this.style.display=\'none\'" />
+                        <img src="/pages/About/assets/img/Castro.JPG" alt="Syrrlian Castro" onerror="this.style.display=\'none\'" />
                     </div>
                     <div class="member-info">
                         <h3 class="member-name">Syrrlian Castro</h3>

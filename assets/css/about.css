@@ -3,7 +3,7 @@
 
 /* Override body background for About page */
 body {
-  background-image: url('/assets/img/Background.jpeg');
+  background-image: url('/pages/About/assets/img/Background.jpeg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
