@@ -8,6 +8,25 @@ function isAuthenticated(): bool
     return isset($_SESSION['user']) && !empty($_SESSION['user']);
 }
 
+function isAdmin(): bool
+{
+    if (!isAuthenticated()) {
+        return false;
+    }
+
+    $adminRoles = [
+        'Database Manager',
+        'Quality Assurance Manager',
+        'Backend',
+        'Designer',
+        'Front-End Developer',
+        'admin',
+        'administrator'
+    ];
+
+    return in_array($_SESSION['user']['role'], $adminRoles);
+}
+
 function findUserByUsername(PDO $pdo, string $username)
 {
     $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username LIMIT 1");
