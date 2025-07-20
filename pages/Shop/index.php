@@ -118,7 +118,13 @@ ob_start();
 
                     <div class="product-actions">
                         <?php if ($stockQuantity > 0): ?>
-                            <button class="btn btn-primary">Add to Cart</button>
+                            <!-- Add to Cart Form -->
+                            <form method="POST" action="/handlers/cart_simple.handler.php" style="margin: 0;">
+                                <input type="hidden" name="action" value="add">
+                                <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']) ?>">
+                                <input type="hidden" name="redirect_url" value="/pages/Shop">
+                                <button type="submit" class="btn btn-primary">Add to Cart</button>
+                            </form>
                         <?php else: ?>
                             <button class="btn btn-primary" disabled>Out of Stock</button>
                         <?php endif; ?>
