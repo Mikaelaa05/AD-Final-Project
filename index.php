@@ -14,6 +14,7 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
+$pageTitle = 'Dashboard';
 
 // Define the content for the layout
 ob_start();
@@ -27,19 +28,7 @@ ob_start();
 </div>
 <?php
 $content = ob_get_clean();
+
+// Include the layout
+include LAYOUTS_PATH . '/main.layout.php';
 ?>
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Dashboard</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
-</head>
-
-<body>
-    <?php include LAYOUTS_PATH . '/main.layout.php'; ?>
-</body>
-
-</html>

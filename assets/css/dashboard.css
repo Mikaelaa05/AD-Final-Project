@@ -1,24 +1,32 @@
-/* Dashboard/Homepage CSS */
+/* SINTHESIZE Corp. Dashboard/Homepage CSS - Cyberpunk Theme */
 /* Styles for the main index page after user login */
+
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap');
 
 * {
   box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
-  color: #333;
-  line-height: 1.6;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: 'Dela Gothic One', Arial, sans-serif !important;
+  background-image: url('/pages/About/assets/img/Background.jpeg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-attachment: fixed !important;
+  background-repeat: no-repeat !important;
+  color: #ffffff !important;
+  line-height: 1.6 !important;
 }
 
 /* Header styling */
 header {
-  background-color: #343a40;
+  background: linear-gradient(145deg, rgba(26, 26, 26, 0.8), rgba(15, 15, 15, 0.8));
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.3);
   padding: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 20px rgba(0, 255, 255, 0.2);
 }
 
 header nav {
@@ -31,77 +39,146 @@ header nav {
 }
 
 header nav a {
-  color: #fff;
+  color: #00ffff;
   text-decoration: none;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-family: 'Dela Gothic One', Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid transparent;
 }
 
 header nav a:hover {
-  background-color: #495057;
+  background: linear-gradient(45deg, rgba(255, 0, 255, 0.2), rgba(0, 255, 255, 0.2));
+  border-color: #00ffff;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+  transform: translateY(-2px);
 }
 
 /* Main content container */
 main {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  min-height: calc(100vh - 200px);
+  min-height: 100vh !important;
+  background: rgba(10, 10, 10, 0.3) !important;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(0, 255, 127, 0.05) 0%, transparent 50%) !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: 20px !important;
+  margin: 20px !important;
 }
 
 /* Dashboard welcome section */
 .dashboard-welcome {
-  background: white;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
+  background: linear-gradient(145deg, rgba(26, 26, 26, 0.4), rgba(15, 15, 15, 0.4));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(51, 51, 51, 0.6);
+  border-radius: 15px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 30px rgba(0, 255, 255, 0.3);
+  padding: 40px;
+  margin: 20px 0;
   text-align: center;
 }
 
 .dashboard-welcome h1 {
-  margin: 0 0 15px 0;
-  color: #343a40;
-  font-size: 2.2rem;
-  font-weight: 300;
+  margin: 0 0 20px 0;
+  color: #00ffff;
+  font-size: 3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-family: 'Dela Gothic One', cursive;
+  text-shadow: 
+    0 0 10px #00ffff,
+    0 0 20px #00ffff,
+    0 0 30px #00ffff;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 
+      0 0 10px #00ffff,
+      0 0 20px #00ffff,
+      0 0 30px #00ffff;
+  }
+  to {
+    text-shadow: 
+      0 0 20px #00ffff,
+      0 0 30px #00ffff,
+      0 0 40px #00ffff;
+  }
 }
 
 .dashboard-welcome p {
   margin: 10px 0;
-  font-size: 1.1rem;
-  color: #6c757d;
+  font-size: 1.2rem;
+  color: #cccccc;
+  font-family: Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 /* Action buttons */
 .dashboard-actions {
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
 .dashboard-actions a {
   display: inline-block;
-  padding: 12px 24px;
-  background-color: #007bff;
-  color: white;
+  padding: 12px 20px;
+  background: linear-gradient(45deg, #ff00ff, #00ffff);
+  color: #000000;
   text-decoration: none;
-  border-radius: 4px;
+  border-radius: 8px;
   margin: 5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
   transition: all 0.3s ease;
-  font-weight: 500;
+  font-family: 'Dela Gothic One', Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-actions a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s;
+}
+
+.dashboard-actions a:hover::before {
+  left: 100%;
 }
 
 .dashboard-actions a:hover {
-  background-color: #0056b3;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  box-shadow: 
+    0 0 30px rgba(255, 0, 255, 0.8),
+    0 0 40px rgba(0, 255, 255, 0.8);
+  transform: translateY(-3px);
 }
 
 .dashboard-actions a.logout {
-  background-color: #dc3545;
+  background: linear-gradient(45deg, #ff0040, #ff6b6b);
 }
 
 .dashboard-actions a.logout:hover {
-  background-color: #c82333;
+  box-shadow: 
+    0 0 30px rgba(255, 0, 64, 0.8),
+    0 0 40px rgba(255, 107, 107, 0.8);
 }
 
 /* Info cards */
@@ -113,41 +190,81 @@ main {
 }
 
 .info-card {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(145deg, rgba(26, 26, 26, 0.4), rgba(15, 15, 15, 0.4));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(51, 51, 51, 0.6);
+  border-radius: 15px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  padding: 30px;
   text-align: center;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.info-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.info-card:hover::before {
+  left: 100%;
 }
 
 .info-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-10px);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.7),
+    0 0 30px rgba(0, 255, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-color: #00ffff;
 }
 
 .info-card h3 {
-  margin: 0 0 10px 0;
-  color: #343a40;
-  font-size: 1.3rem;
+  margin: 0 0 15px 0;
+  color: #00ff7f;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(0, 255, 127, 0.6);
+  font-family: 'Dela Gothic One', cursive;
 }
 
 .info-card p {
   margin: 0;
-  color: #6c757d;
+  color: #cccccc;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
 }
 
 /* Footer styling */
 footer {
-  background-color: #343a40;
-  color: #fff;
+  background: linear-gradient(145deg, rgba(26, 26, 26, 0.4), rgba(15, 15, 15, 0.4));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(51, 51, 51, 0.6);
+  border-radius: 15px;
+  color: #cccccc;
   text-align: center;
   padding: 20px 0;
-  margin-top: auto;
+  margin-top: 30px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
 }
 
 footer p {
   margin: 0;
   font-size: 0.9rem;
+  font-family: Arial, sans-serif;
 }
 
 /* Responsive design */
