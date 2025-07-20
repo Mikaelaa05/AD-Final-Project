@@ -55,6 +55,16 @@ $seedOrder = [
         'dataFile' => 'products.staticData.php',
         'depends' => []
     ],
+    'orders' => [
+        'description' => 'Customer orders and purchase history',
+        'dataFile' => 'orders.staticData.php',
+        'depends' => ['customers', 'products']
+    ],
+    'order_items' => [
+        'description' => 'Order line items and product details',
+        'dataFile' => 'orders.staticData.php', // Same file, different processing
+        'depends' => ['orders', 'products']
+    ],
     'projects' => [
         'description' => 'Project management data',
         'dataFile' => 'projects.staticData.php',
@@ -167,12 +177,21 @@ foreach ($seedOrder as $table => $config) {
                 
             case 'customers':
                 $stmt = $pdo->prepare("
-                    INSERT INTO customers (name, email, phone, address) 
-                    VALUES (:name, :email, :phone, :address)
+                    INSERT INTO customers (id, name, email, phone, address) 
+                    VALUES (:id, :name, :email, :phone, :address)
                 ");
                 
                 foreach ($data as $customer) {
-                    $stmt->execute($customer);
+                    $uuid = generate_uuid();
+                    $stmt->execute([
+                        ':id' => $uuid,
+                        ':name' => $customer['name'],
+                        ':email' => $customer['email'],
+                        ':phone' => $customer['phone'],
+                        ':address' => $customer['address']
+                    ]);
+                    
+                    $seededData['customers'][$customer['email']] = $uuid;
                     $insertedCount++;
                     echo "   👥 {$customer['name']} ({$customer['email']})\n";
                 }
@@ -204,8 +223,113 @@ foreach ($seedOrder as $table => $config) {
                         ':is_active' => $p['is_active'] ? 'true' : 'false',
                     ]);
                     
+                    $seededData['products'][$p['sku']] = $uuid;
                     $insertedCount++;
                     echo "   🛍️  {$p['sku']}: {$p['name']} (\${$p['price']})\n";
+                }
+                break;
+                
+            case 'orders':
+                if (empty($seededData['customers'])) {
+                    echo "   ⚠️  Missing dependency data (customers)\n";
+                    break;
+                }
+                
+                $stmt = $pdo->prepare("
+                    INSERT INTO orders (
+                        id, customer_id, order_number, status, total_amount, subtotal, 
+                        tax_amount, shipping_amount, discount_amount, payment_method, 
+                        payment_status, shipping_address, billing_address, notes
+                    ) VALUES (
+                        :id, :customer_id, :order_number, :status, :total_amount, :subtotal,
+                        :tax_amount, :shipping_amount, :discount_amount, :payment_method,
+                        :payment_status, :shipping_address, :billing_address, :notes
+                    )
+                ");
+                
+                foreach ($data as $order) {
+                    try {
+                        // Find customer by email
+                        $customerId = $seededData['customers'][$order['customer_email']] ?? null;
+                        
+                        if (!$customerId) {
+                            echo "   ⚠️  Customer not found: {$order['customer_email']}\n";
+                            continue;
+                        }
+                        
+                        $orderId = generate_uuid();
+                        $orderNumber = 'ORD-' . date('Ymd') . '-' . sprintf('%04d', $insertedCount + 1);
+                        
+                        $stmt->execute([
+                            ':id' => $orderId,
+                            ':customer_id' => $customerId,
+                            ':order_number' => $orderNumber,
+                            ':status' => $order['status'],
+                            ':total_amount' => $order['total_amount'],
+                            ':subtotal' => $order['subtotal'],
+                            ':tax_amount' => $order['tax_amount'],
+                            ':shipping_amount' => $order['shipping_amount'],
+                            ':discount_amount' => $order['discount_amount'],
+                            ':payment_method' => $order['payment_method'],
+                            ':payment_status' => $order['payment_status'],
+                            ':shipping_address' => $order['shipping_address'],
+                            ':billing_address' => $order['billing_address'],
+                            ':notes' => $order['notes']
+                        ]);
+                        
+                        $seededData['orders'][$orderNumber] = [
+                            'id' => $orderId,
+                            'items' => $order['items']
+                        ];
+                        
+                        $insertedCount++;
+                        echo "   📦 {$orderNumber}: {$order['payment_method']} - \${$order['total_amount']} ({$order['status']})\n";
+                        
+                    } catch (Exception $e) {
+                        echo "   ❌ Failed to create order: " . $e->getMessage() . "\n";
+                    }
+                }
+                break;
+
+            case 'order_items':
+                if (empty($seededData['orders']) || empty($seededData['products'])) {
+                    echo "   ⚠️  Missing dependency data (orders/products)\n";
+                    break;
+                }
+                
+                $stmt = $pdo->prepare("
+                    INSERT INTO order_items (order_id, product_id, quantity, unit_price, total_price)
+                    VALUES (:order_id, :product_id, :quantity, :unit_price, :total_price)
+                ");
+                
+                foreach ($seededData['orders'] as $orderNumber => $orderData) {
+                    foreach ($orderData['items'] as $item) {
+                        try {
+                            // Find product by SKU
+                            $productId = $seededData['products'][$item['product_sku']] ?? null;
+                            
+                            if (!$productId) {
+                                echo "   ⚠️  Product not found: {$item['product_sku']}\n";
+                                continue;
+                            }
+                            
+                            $totalPrice = $item['quantity'] * $item['unit_price'];
+                            
+                            $stmt->execute([
+                                ':order_id' => $orderData['id'],
+                                ':product_id' => $productId,
+                                ':quantity' => $item['quantity'],
+                                ':unit_price' => $item['unit_price'],
+                                ':total_price' => $totalPrice
+                            ]);
+                            
+                            $insertedCount++;
+                            echo "   🛒 {$orderNumber}: {$item['product_sku']} x{$item['quantity']} (\${$totalPrice})\n";
+                            
+                        } catch (Exception $e) {
+                            echo "   ❌ Failed to create order item: " . $e->getMessage() . "\n";
+                        }
+                    }
                 }
                 break;
                 
@@ -333,9 +457,37 @@ foreach (array_keys($seedOrder) as $table) {
     }
 }
 
+// Show order-specific statistics
+echo "\n💰 **ORDERS STATISTICS**\n";
+echo "=========================\n";
+try {
+    $result = $pdo->query("
+        SELECT 
+            status,
+            COUNT(*) as order_count,
+            SUM(total_amount) as total_revenue
+        FROM orders 
+        GROUP BY status
+        ORDER BY status
+    ");
+    
+    $totalRevenue = 0;
+    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        echo "📦 {$row['status']}: {$row['order_count']} orders (\${$row['total_revenue']})\n";
+        if ($row['status'] !== 'cancelled') {
+            $totalRevenue += $row['total_revenue'];
+        }
+    }
+    echo "💰 Total Revenue: \${$totalRevenue}\n";
+    
+} catch (Exception $e) {
+    echo "❌ Could not calculate order statistics\n";
+}
+
 if ($successCount === $totalTables) {
     echo "\n🎯 All tables seeded successfully!\n";
     echo "💡 Your database is ready for development!\n";
+    echo "🛒 Orders system is fully functional!\n";
     exit(0);
 } else {
     echo "\n⚠️  Some tables failed to seed. Check the errors above.\n";
