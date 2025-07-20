@@ -26,59 +26,50 @@ $pdo = new PDO($dsn, $username, $password, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 ]);
 
-// Get filter parameters
-$categoryFilter = $_GET['category'] ?? '';
-
-// Build query
-$sql = "SELECT * FROM products WHERE is_active = true";
-$params = [];
-
-if (!empty($categoryFilter)) {
-    $sql .= " AND category = :category";
-    $params['category'] = $categoryFilter;
-}
-
-$sql .= " ORDER BY name ASC";
-
+// Get all active products
+$sql = "SELECT * FROM products WHERE is_active = true ORDER BY name ASC";
 $stmt = $pdo->prepare($sql);
-$stmt->execute($params);
+$stmt->execute();
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Get all categories for filter dropdown
-$categoriesStmt = $pdo->query("SELECT DISTINCT category FROM products WHERE is_active = true ORDER BY category");
-$categories = $categoriesStmt->fetchAll(PDO::FETCH_COLUMN);
+// Image mapping for products
+$productImages = [
+    'IONFUEL VIALS' => 'IonFuelVials.png',
+    'IONPULSE BYTE' => 'IonpulseByte.png', 
+    'IONPULSE SPINE MK. VI' => 'IonpulseSpineMkV1.png',
+    'ENERGY PACKS' => 'EnergyPacks.png',
+    'NEUROPLASTICITY' => 'Neuroplasticity.png',
+    'NEUROSPARK NODE' => 'NeuroSparkNode.png',
+    'OVERDRIVE CAPSULE' => 'OverDriveCapsule.png',
+    'SYNTHCELL BATTERY PACK' => 'SynthCellBatteryPack.png',
+    'SYNTHLUNG UPGRADE' => 'SynthlungUpgrade.png',
+    'TESLA NODE' => 'TeslaNode.png'
+];
 
 // Define the content for the layout
 ob_start();
 ?>
+<div class="shop-container">
 <div class="shop-header">
-    <h1>Product Shop</h1>
-    <p>Browse our selection of high-tech products and cybernetic enhancements</p>
+    <h1><span style="color: #ff0040;">SIN</span>THESIZE Marketplace</h1>
+    <p>Cybernetic Enhancements • Digital Weaponry • Reality Hacking Tools</p>
 </div>
-
-<?php if (!empty($categories)): ?>
-    <div class="shop-filters">
-        <form method="GET" class="filter-group">
-            <label for="category">Filter by Category:</label>
-            <select name="category" id="category" onchange="this.form.submit()">
-                <option value="">All Categories</option>
-                <?php foreach ($categories as $category): ?>
-                    <option value="<?= htmlspecialchars($category) ?>" <?= $categoryFilter === $category ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($category) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <?php if (!empty($categoryFilter)): ?>
-                <a href="?" class="btn btn-secondary">Clear Filter</a>
-            <?php endif; ?>
-        </form>
-    </div>
-<?php endif; ?>
 
 <?php if (!empty($products)): ?>
     <div class="products-grid">
         <?php foreach ($products as $product): ?>
             <div class="product-card">
+                <?php 
+                $productNameUpper = strtoupper($product['name']);
+                if (isset($productImages[$productNameUpper])): 
+                ?>
+                    <div class="product-image">
+                        <img src="/pages/Shop/assets/img/<?= $productImages[$productNameUpper] ?>" 
+                             alt="<?= htmlspecialchars($product['name']) ?>" 
+                             loading="lazy">
+                    </div>
+                <?php endif; ?>
+                
                 <h3 class="product-name"><?= htmlspecialchars($product['name']) ?></h3>
 
                 <?php if (!empty($product['category'])): ?>
@@ -128,10 +119,8 @@ ob_start();
                 <div class="product-actions">
                     <?php if ($stockQuantity > 0): ?>
                         <button class="btn btn-primary">Add to Cart</button>
-                        <button class="btn btn-secondary">View Details</button>
                     <?php else: ?>
                         <button class="btn btn-primary" disabled>Out of Stock</button>
-                        <button class="btn btn-secondary">Notify When Available</button>
                     <?php endif; ?>
                 </div>
             </div>
@@ -140,16 +129,10 @@ ob_start();
 <?php else: ?>
     <div class="no-products">
         <h3>No Products Found</h3>
-        <p>
-            <?php if (!empty($categoryFilter)): ?>
-                No products found in the "<?= htmlspecialchars($categoryFilter) ?>" category.
-                <br><a href="?" class="btn btn-primary">View All Products</a>
-            <?php else: ?>
-                No products are currently available. Please check back later.
-            <?php endif; ?>
-        </p>
+        <p>No products are currently available. Please check back later.</p>
     </div>
 <?php endif; ?>
+</div>
 
 <?php
 $content = ob_get_clean();
@@ -158,11 +141,11 @@ $content = ob_get_clean();
 <html>
 
 <head>
-    <title>Shop - Product Catalog</title>
+    <title>SINTHESIZE Marketplace - Cybernetic Catalog</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/assets/css/dashboard.css">
-    <link rel="stylesheet" href="/assets/css/shop.css">
+    <link rel="stylesheet" href="/assets/css/shop.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
