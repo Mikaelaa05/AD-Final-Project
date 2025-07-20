@@ -15,7 +15,7 @@ html, body {
   min-height: 100vh !important;
   font-family: 'Dela Gothic One', Arial, sans-serif !important;
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%) !important;
-  background-image: url('/assets/img/Background.jpeg') !important;
+  background-image: url('/pages/About/assets/img/Background.jpeg') !important;
   background-size: cover !important;
   background-position: center !important;
   background-attachment: fixed !important;

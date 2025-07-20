@@ -18,6 +18,12 @@ body {
     radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 40% 40%, rgba(0, 255, 127, 0.05) 0%, transparent 50%);
   backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Dela Gothic One', Arial, sans-serif;
+  color: #ffffff;
+  padding: 20px;
+  margin: 20px;
 }
 
 /* Hero Section */
@@ -33,6 +39,8 @@ body {
   border-bottom: 2px solid #00ffff;
   box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
   backdrop-filter: blur(15px);
+  border-radius: 15px;
+  margin: 20px 0;
 }
 
 .hero-content {
@@ -68,6 +76,7 @@ body {
   margin: 0;
   color: #cccccc;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  font-family: Arial, sans-serif;
 }
 
 /* Container */
@@ -84,6 +93,8 @@ body {
   border-top: 1px solid rgba(51, 51, 51, 0.6);
   border-bottom: 1px solid rgba(51, 51, 51, 0.6);
   backdrop-filter: blur(15px);
+  border-radius: 15px;
+  margin: 20px 0;
 }
 
 .company-description h2 {
@@ -115,12 +126,14 @@ body {
   color: #ffffff;
   margin-bottom: 2rem;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+  font-family: Arial, sans-serif;
 }
 
 .description-content p {
   font-size: 1.1rem;
   color: #cccccc;
   margin-bottom: 1.5rem;
+  font-family: Arial, sans-serif;
 }
 
 /* Team Section */
@@ -129,6 +142,8 @@ body {
   background: rgba(13, 13, 13, 0.4);
   position: relative;
   backdrop-filter: blur(15px);
+  border-radius: 15px;
+  margin: 20px 0;
 }
 
 .team-section::before {
@@ -162,6 +177,7 @@ body {
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  font-family: Arial, sans-serif;
 }
 
 .team-grid {
@@ -280,6 +296,7 @@ body {
   color: #cccccc;
   line-height: 1.6;
   margin-bottom: 1.5rem;
+  font-family: Arial, sans-serif;
 }
 
 .member-contact {
@@ -303,6 +320,8 @@ body {
   color: white;
   border-top: 2px solid #ff00ff;
   backdrop-filter: blur(15px);
+  border-radius: 15px;
+  margin: 20px 0;
 }
 
 .company-values h2 {
