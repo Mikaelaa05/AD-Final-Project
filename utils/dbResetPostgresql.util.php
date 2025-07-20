@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 /**
- * PostgreSQL Database Reset Utility - All Tables
- * Drops and recreates all database tables
+ * PostgreSQL Database Reset Utility - Auto-detect Tables
+ * Drops and recreates available database tables
  */
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -20,29 +20,42 @@ $pdo = new PDO($dsn, $username, $password, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 ]);
 
-echo "🧹 **POSTGRESQL DATABASE RESET - ALL TABLES**\n";
-echo "==============================================\n\n";
+echo "🧹 **POSTGRESQL DATABASE RESET - AUTO-DETECT**\n";
+echo "===============================================\n\n";
 
-$tables = [
-    'users' => 'Team members and admin users',
-    'customers' => 'Website signups and customer accounts', 
-    'products' => 'Product catalog and inventory',
-    'orders' => 'Customer orders and purchase history',
-    'order_items' => 'Order line items and product details',
-    'projects' => 'Project management data',
-    'tasks' => 'Task assignments and tracking',
-    'project_users' => 'Project-user relationships'
-];
+// Auto-detect available model files
+$databasePath = BASE_PATH . '/database';
+$modelFiles = glob($databasePath . '/*.model.sql');
+
+if (empty($modelFiles)) {
+    echo "❌ No model files found in: {$databasePath}\n";
+    echo "💡 Please create .model.sql files for your tables\n";
+    exit(1);
+}
+
+$tables = [];
+foreach ($modelFiles as $filePath) {
+    $filename = basename($filePath);
+    $tableName = str_replace('.model.sql', '', $filename);
+    $tables[] = $tableName;
+}
 
 $successCount = 0;
 $totalTables = count($tables);
 
-echo "⚠️  WARNING: This will completely reset all PostgreSQL tables!\n";
-echo "📊 Tables to reset: " . implode(', ', array_keys($tables)) . "\n\n";
+echo "⚠️  **WARNING: DATABASE RESET ONLY**\n";
+echo "====================================\n";
+echo "🎯 This will reset detected PostgreSQL tables!\n";
+echo "📁 Database path: {$databasePath}\n";
+echo "📊 Found {$totalTables} tables to reset: " . implode(', ', $tables) . "\n";
+echo "💾 All existing data will be permanently lost!\n";
+echo "📋 Tables will be recreated empty (no data seeding)\n\n";
 
-foreach ($tables as $table => $description) {
+echo "🔄 **RESET PROCESS STARTING**\n";
+echo "============================\n\n";
+
+foreach ($tables as $table) {
     echo "🔄 **Resetting {$table} table**\n";
-    echo "   Purpose: {$description}\n";
     
     try {
         // Check if table exists first
@@ -61,53 +74,63 @@ foreach ($tables as $table => $description) {
             $countResult = $pdo->query("SELECT COUNT(*) FROM {$table}");
             $currentCount = $countResult->fetchColumn();
             echo "   📊 Current records: {$currentCount}\n";
+            
+            // Drop existing table with CASCADE to handle dependencies
+            echo "   🗑️  Dropping existing {$table} table...\n";
+            $pdo->exec("DROP TABLE IF EXISTS {$table} CASCADE;");
+            echo "   ✅ Table dropped successfully\n";
         } else {
             echo "   📋 Table doesn't exist yet\n";
         }
         
-        // Read and apply model file
-        $modelPath = DATABASE_PATH . "/{$table}.model.sql";
+        // Find and apply model file
+        $modelPath = $databasePath . "/{$table}.model.sql";
         
-        if (!file_exists($modelPath)) {
+        if (file_exists($modelPath)) {
+            echo "   📁 Found model file: {$table}.model.sql\n";
+            
+            $sql = file_get_contents($modelPath);
+            if ($sql !== false && !empty(trim($sql))) {
+                echo "   🏗️  Recreating {$table} table from schema...\n";
+                $pdo->exec($sql);
+                
+                // Verify table creation
+                $result = $pdo->query("
+                    SELECT EXISTS (
+                        SELECT FROM information_schema.tables 
+                        WHERE table_schema = 'public' 
+                        AND table_name = '{$table}'
+                    )
+                ");
+                
+                if ($result->fetchColumn()) {
+                    echo "   ✅ Table recreated successfully (empty)\n";
+                    
+                    // Show table info
+                    $columnsResult = $pdo->query("
+                        SELECT COUNT(*) 
+                        FROM information_schema.columns 
+                        WHERE table_schema = 'public' 
+                        AND table_name = '{$table}'
+                    ");
+                    $columnCount = $columnsResult->fetchColumn();
+                    echo "   📊 Structure: {$columnCount} columns ready\n";
+                    
+                    $successCount++;
+                } else {
+                    echo "   ❌ Table creation verification failed\n";
+                }
+            } else {
+                echo "   ❌ Model file is empty or unreadable\n";
+            }
+        } else {
             echo "   ❌ Model file not found: {$modelPath}\n";
-            echo "   ⏭️  Skipping {$table} table\n\n";
-            continue;
         }
-        
-        $sql = file_get_contents($modelPath);
-        if ($sql === false || empty(trim($sql))) {
-            echo "   ❌ Model file is empty or unreadable\n";
-            echo "   ⏭️  Skipping {$table} table\n\n";
-            continue;
-        }
-        
-        // Drop and recreate table
-        echo "   🗑️  Dropping existing table...\n";
-        $pdo->exec("DROP TABLE IF EXISTS {$table} CASCADE;");
-        
-        echo "   🏗️  Recreating table from schema...\n";
-        $pdo->exec($sql);
-        
-        // Clear all data
-        echo "   🧹 Truncating table data...\n";
-        try {
-            $pdo->exec("TRUNCATE TABLE {$table} RESTART IDENTITY CASCADE;");
-        } catch (PDOException $e) {
-            // Table might be empty or have constraints
-            echo "   💡 Truncate skipped (table may be empty): " . $e->getMessage() . "\n";
-        }
-        
-        // Verify reset
-        $result = $pdo->query("SELECT COUNT(*) FROM {$table}");
-        $finalCount = $result->fetchColumn();
-        
-        echo "   ✅ Table reset successfully (records: {$finalCount})\n";
-        $successCount++;
         
     } catch (PDOException $e) {
-        echo "   ❌ Reset failed: " . $e->getMessage() . "\n";
+        echo "   ❌ Reset failed for {$table}: " . $e->getMessage() . "\n";
     } catch (Exception $e) {
-        echo "   ❌ Error: " . $e->getMessage() . "\n";
+        echo "   ❌ Error processing {$table}: " . $e->getMessage() . "\n";
     }
     
     echo "\n";
@@ -117,13 +140,42 @@ echo "🎉 **RESET SUMMARY**\n";
 echo "====================\n";
 echo "✅ Successfully reset: {$successCount}/{$totalTables} tables\n";
 
+// Show final status
+echo "\n📊 **POST-RESET STATUS**\n";
+echo "========================\n";
+
+foreach ($tables as $table) {
+    try {
+        $result = $pdo->query("
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = '{$table}'
+            )
+        ");
+        
+        if ($result->fetchColumn()) {
+            $countResult = $pdo->query("SELECT COUNT(*) FROM {$table}");
+            $count = $countResult->fetchColumn();
+            echo "✅ {$table}: Ready ({$count} records)\n";
+        } else {
+            echo "❌ {$table}: Missing\n";
+        }
+    } catch (Exception $e) {
+        echo "❌ {$table}: Error - {$e->getMessage()}\n";
+    }
+}
+
 if ($successCount === $totalTables) {
-    echo "🎯 All tables reset successfully!\n";
-    echo "💡 Next step: Seed the tables with sample data\n";
+    echo "\n🎯 All available tables reset successfully!\n";
+    echo "📋 Database structure is ready with empty tables\n";
+    echo "\n💡 **NEXT STEPS:**\n";
+    echo "================\n";
+    echo "🌱 To populate with sample data:\n";
     echo "   docker exec adfinalproject-service php utils/dbSeederPostgresql.util.php\n";
     exit(0);
 } else {
-    echo "⚠️  Some tables failed to reset. Check the errors above.\n";
+    echo "\n⚠️  Some tables failed to reset completely.\n";
     exit(1);
 }
 ?>

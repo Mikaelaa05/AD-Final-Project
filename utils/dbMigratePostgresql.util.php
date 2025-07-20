@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 /**
- * PostgreSQL Database Migration Utility - All Tables
- * Applies all database schemas from model files
+ * PostgreSQL Database Migration Utility - Auto-detect Tables
+ * Creates database tables from available model files
  */
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -20,41 +20,43 @@ $pdo = new PDO($dsn, $username, $password, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 ]);
 
-echo "🏗️  **POSTGRESQL DATABASE MIGRATION - ALL TABLES**\n";
-echo "=========================================================\n\n";
+echo "🏗️  **POSTGRESQL DATABASE MIGRATION - AUTO-DETECT**\n";
+echo "====================================================\n\n";
 
-$tables = [
-    'users' => 'Team members and admin users',
-    'customers' => 'Website signups and customer accounts',
-    'products' => 'Product catalog and inventory',
-    'orders' => 'Customer orders and purchase history',
-    'order_items' => 'Order line items and product details',
-    'projects' => 'Project management data',
-    'tasks' => 'Task assignments and tracking',
-    'project_users' => 'Project-user relationships'
-];
+// Auto-detect available model files
+$databasePath = BASE_PATH . '/database';
+$modelFiles = glob($databasePath . '/*.model.sql');
+
+if (empty($modelFiles)) {
+    echo "❌ No model files found in: {$databasePath}\n";
+    echo "💡 Please create .model.sql files for your tables\n";
+    exit(1);
+}
+
+$tables = [];
+foreach ($modelFiles as $filePath) {
+    $filename = basename($filePath);
+    $tableName = str_replace('.model.sql', '', $filename);
+    $tables[] = $tableName;
+}
 
 $successCount = 0;
 $totalTables = count($tables);
 
-foreach ($tables as $table => $description) {
+echo "📝 **MIGRATION PLAN**\n";
+echo "===================\n";
+echo "🎯 Purpose: Create table structures only\n";
+echo "📁 Database path: {$databasePath}\n";
+echo "📊 Found {$totalTables} model files: " . implode(', ', $tables) . "\n";
+echo "📋 Result: Empty tables ready for data\n\n";
+
+foreach ($tables as $table) {
     echo "📋 **Migrating {$table} table**\n";
-    echo "   Purpose: {$description}\n";
 
     try {
-        // Drop existing table if it exists
-        echo "   🗑️  Dropping existing {$table} table if exists...\n";
-        $pdo->exec("DROP TABLE IF EXISTS {$table} CASCADE;");
-
-        // Read model file
-        $modelPath = DATABASE_PATH . "/{$table}.model.sql";
-
-        if (!file_exists($modelPath)) {
-            echo "   ❌ Model file not found: {$modelPath}\n";
-            echo "   ⏭️  Skipping {$table} table\n\n";
-            continue;
-        }
+        $modelPath = $databasePath . "/{$table}.model.sql";
         
+        // Read model file
         $sql = file_get_contents($modelPath);
         if ($sql === false || empty(trim($sql))) {
             echo "   ❌ Model file is empty or unreadable\n";
@@ -62,9 +64,13 @@ foreach ($tables as $table => $description) {
             continue;
         }
         
+        // Drop existing table if it exists (with CASCADE for dependencies)
+        echo "   🗑️  Dropping existing {$table} table if exists...\n";
+        $pdo->exec("DROP TABLE IF EXISTS {$table} CASCADE;");
+        
         // Apply schema
+        echo "   🏗️  Creating {$table} table from schema...\n";
         $pdo->exec($sql);
-        echo "   ✅ Schema applied successfully\n";
         
         // Verify table creation
         $result = $pdo->query("
@@ -76,7 +82,19 @@ foreach ($tables as $table => $description) {
         ");
         
         if ($result->fetchColumn()) {
-            echo "   ✅ Table verified and ready\n";
+            echo "   ✅ Table created successfully (empty)\n";
+            
+            // Show table structure
+            $columnsResult = $pdo->query("
+                SELECT COUNT(*) 
+                FROM information_schema.columns 
+                WHERE table_schema = 'public' 
+                AND table_name = '{$table}'
+            ");
+            
+            $columnCount = $columnsResult->fetchColumn();
+            echo "   📊 Structure: {$columnCount} columns ready\n";
+            
             $successCount++;
         } else {
             echo "   ❌ Table verification failed\n";
@@ -95,13 +113,47 @@ echo "🎉 **MIGRATION SUMMARY**\n";
 echo "========================\n";
 echo "✅ Successfully migrated: {$successCount}/{$totalTables} tables\n";
 
+// Show final database structure
+echo "\n📊 **DATABASE STRUCTURE**\n";
+echo "=========================\n";
+
+foreach ($tables as $table) {
+    try {
+        $result = $pdo->query("
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = '{$table}'
+            )
+        ");
+        
+        if ($result->fetchColumn()) {
+            $columnsResult = $pdo->query("
+                SELECT COUNT(*) 
+                FROM information_schema.columns 
+                WHERE table_schema = 'public' 
+                AND table_name = '{$table}'
+            ");
+            $columnCount = $columnsResult->fetchColumn();
+            echo "✅ {$table}: {$columnCount} columns (empty)\n";
+        } else {
+            echo "❌ {$table}: Table not found\n";
+        }
+    } catch (Exception $e) {
+        echo "❌ {$table}: Error checking - {$e->getMessage()}\n";
+    }
+}
+
 if ($successCount === $totalTables) {
-    echo "🎯 All tables migrated successfully!\n";
-    echo "💡 Next step: Seed the tables with sample data\n";
+    echo "\n🎯 All available tables migrated successfully!\n";
+    echo "📋 Database structure is ready with empty tables\n";
+    echo "\n💡 **NEXT STEPS:**\n";
+    echo "================\n";
+    echo "🌱 To populate with sample data:\n";
     echo "   docker exec adfinalproject-service php utils/dbSeederPostgresql.util.php\n";
     exit(0);
 } else {
-    echo "⚠️  Some tables failed to migrate. Check the errors above.\n";
+    echo "\n⚠️  Some tables failed to migrate. Check the errors above.\n";
     exit(1);
 }
 ?>
