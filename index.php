@@ -5,31 +5,31 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/bootstrap.php';
-require_once BASE_PATH . '/handlers/mongodbChecker.handler.php';
-require_once BASE_PATH . '/handlers/postgreChecker.handler.php';
+require_once UTILS_PATH . '/auth.util.php';
 
 session_start();
 
 if (!isset($_SESSION['user'])) {
-    include BASE_PATH . '/errors/unauthorized.error.php';
+    header('Location: /pages/Login/index.php');
     exit;
 }
 
 $user = $_SESSION['user'];
-require_once BASE_PATH . '/components/navbar.component.php';
+$pageTitle = 'Dashboard';
+
+// Define the content for the layout
+ob_start();
 ?>
-<!DOCTYPE html>
-<html>
+<div class="dashboard-welcome">
+    <h1>Welcome, <?= htmlspecialchars($user['first_name']) ?>!</h1>
+    <p>Your role: <?= htmlspecialchars($user['role']) ?></p>
+    <div class="dashboard-actions">
+        <a href="/handlers/logout.handler.php" class="logout">Logout</a>
+    </div>
+</div>
+<?php
+$content = ob_get_clean();
 
-    <head>
-        <title>Dashboard</title>
-    </head>
-
-    <body>
-        <h1>Welcome, <?= htmlspecialchars($user['first_name']) ?>!</h1>
-        <p>Your role: <?= htmlspecialchars($user['role']) ?></p>
-        <a href="/handlers/logout.handler.php">Logout</a>
-        <?php require_once BASE_PATH . '/components/footer.component.php'; ?>
-    </body>
-
-</html>
+// Include the layout
+include LAYOUTS_PATH . '/main.layout.php';
+?>

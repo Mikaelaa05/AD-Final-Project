@@ -1,5 +1,31 @@
 <?php
 
+function isAuthenticated(): bool
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    return isset($_SESSION['user']) && !empty($_SESSION['user']);
+}
+
+function isAdmin(): bool
+{
+    if (!isAuthenticated()) {
+        return false;
+    }
+
+    $adminRoles = [
+        'Database Manager',
+        'Quality Assurance Manager',
+        'Backend',
+        'Designer',
+        'Front-End Developer',
+        'admin',
+        'administrator'
+    ];
+
+    return in_array($_SESSION['user']['role'], $adminRoles);
+}
 
 function findUserByUsername(PDO $pdo, string $username)
 {

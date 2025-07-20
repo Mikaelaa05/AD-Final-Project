@@ -1,6 +1,6 @@
 <?php
 
-require_once BASE_PATH . '/utils/envSetter.util.php';
+require_once UTILS_PATH . '/envSetter.util.php';
 
 $host = $typeConfig['pgHost'];
 $port = $typeConfig['pgPort'];
