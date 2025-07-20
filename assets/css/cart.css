@@ -66,6 +66,14 @@ body {
   animation: glow 2s ease-in-out infinite alternate;
 }
 
+/* SIN text should be red with red glow */
+.cart-header h1 span {
+  color: #ff0040 !important;
+  text-shadow: 0 0 10px #ff0040, 0 0 20px #ff0040, 0 0 30px #ff0040 !important;
+  -webkit-animation: redGlow 2s ease-in-out infinite alternate;
+  animation: redGlow 2s ease-in-out infinite alternate;
+}
+
 @-webkit-keyframes glow {
   from {
     text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
@@ -81,6 +89,25 @@ body {
   }
   to {
     text-shadow: 0 0 15px #00ffff, 0 0 25px #00ffff, 0 0 35px #00ffff;
+  }
+}
+
+/* Red glow animation for SIN text */
+@-webkit-keyframes redGlow {
+  from {
+    text-shadow: 0 0 10px #ff0040, 0 0 20px #ff0040, 0 0 30px #ff0040;
+  }
+  to {
+    text-shadow: 0 0 15px #ff0040, 0 0 25px #ff0040, 0 0 35px #ff0040;
+  }
+}
+
+@keyframes redGlow {
+  from {
+    text-shadow: 0 0 10px #ff0040, 0 0 20px #ff0040, 0 0 30px #ff0040;
+  }
+  to {
+    text-shadow: 0 0 15px #ff0040, 0 0 25px #ff0040, 0 0 35px #ff0040;
   }
 }
 
