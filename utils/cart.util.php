@@ -33,6 +33,17 @@ function addToCart(string $userId, string $productId, int $quantity = 1): bool {
     try {
         $pdo = getCartDbConnection();
         
+        // First check product stock availability
+        $stockSql = "SELECT stock_quantity, name FROM products WHERE id = :product_id AND is_active = true";
+        $stockStmt = $pdo->prepare($stockSql);
+        $stockStmt->execute([':product_id' => $productId]);
+        $product = $stockStmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$product) {
+            error_log("Product not found or inactive: $productId");
+            return false;
+        }
+        
         // Check if item already exists in cart
         $checkSql = "SELECT id, quantity FROM cart WHERE user_id = :user_id AND product_id = :product_id";
         $checkStmt = $pdo->prepare($checkSql);
@@ -42,10 +53,16 @@ function addToCart(string $userId, string $productId, int $quantity = 1): bool {
         ]);
         
         $existingItem = $checkStmt->fetch(PDO::FETCH_ASSOC);
+        $newQuantity = $existingItem ? $existingItem['quantity'] + $quantity : $quantity;
+        
+        // Check if requested quantity exceeds available stock
+        if ($newQuantity > $product['stock_quantity']) {
+            error_log("Insufficient stock for product {$product['name']}. Available: {$product['stock_quantity']}, Requested: $newQuantity");
+            return false;
+        }
         
         if ($existingItem) {
             // Update quantity if item exists
-            $newQuantity = $existingItem['quantity'] + $quantity;
             $updateSql = "UPDATE cart SET quantity = :quantity, updated_at = CURRENT_TIMESTAMP WHERE id = :id";
             $updateStmt = $pdo->prepare($updateSql);
             return $updateStmt->execute([
@@ -103,6 +120,22 @@ function updateCartQuantity(string $userId, string $productId, int $quantity): b
             return removeFromCart($userId, $productId);
         }
         
+        // Check stock availability before updating
+        $stockSql = "SELECT stock_quantity, name FROM products WHERE id = :product_id AND is_active = true";
+        $stockStmt = $pdo->prepare($stockSql);
+        $stockStmt->execute([':product_id' => $productId]);
+        $product = $stockStmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$product) {
+            error_log("Product not found or inactive: $productId");
+            return false;
+        }
+        
+        if ($quantity > $product['stock_quantity']) {
+            error_log("Insufficient stock for product {$product['name']}. Available: {$product['stock_quantity']}, Requested: $quantity");
+            return false;
+        }
+        
         $sql = "UPDATE cart SET quantity = :quantity, updated_at = CURRENT_TIMESTAMP 
                 WHERE user_id = :user_id AND product_id = :product_id";
         $stmt = $pdo->prepare($sql);
@@ -115,6 +148,13 @@ function updateCartQuantity(string $userId, string $productId, int $quantity): b
         error_log("Update cart quantity error: " . $e->getMessage());
         return false;
     }
+}
+
+/**
+ * Alias for updateCartQuantity to match handler expectations
+ */
+function updateCartItem(string $userId, string $productId, int $quantity): bool {
+    return updateCartQuantity($userId, $productId, $quantity);
 }
 
 /**

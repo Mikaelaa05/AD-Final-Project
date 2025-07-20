@@ -41,7 +41,7 @@ try {
             if ($success) {
                 header('Location: ' . $redirectUrl . '?added=1');
             } else {
-                header('Location: ' . $redirectUrl . '?error=add_failed');
+                header('Location: ' . $redirectUrl . '?error=insufficient_stock');
             }
             break;
             

@@ -56,6 +56,30 @@ ob_start();
         <p>Cybernetic Enhancements • Digital Weaponry • Reality Hacking Tools</p>
     </div>
 
+    <?php
+    // Display feedback messages
+    if (isset($_GET['added']) && $_GET['added'] == '1'): ?>
+        <div class="alert alert-success">
+            ✅ Product added to cart successfully!
+        </div>
+    <?php elseif (isset($_GET['error'])): ?>
+        <div class="alert alert-error">
+            <?php
+            switch ($_GET['error']) {
+                case 'insufficient_stock':
+                    echo '❌ Sorry, not enough stock available for this product.';
+                    break;
+                case 'add_failed':
+                    echo '❌ Failed to add product to cart. Please try again.';
+                    break;
+                default:
+                    echo '❌ An error occurred: ' . htmlspecialchars($_GET['error']);
+                    break;
+            }
+            ?>
+        </div>
+    <?php endif; ?>
+
     <?php if (!empty($products)): ?>
         <div class="products-grid">
             <?php foreach ($products as $product): ?>
