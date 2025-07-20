@@ -98,7 +98,7 @@ foreach ($products as $product) {
                     </td>
                     <td class="sku">' . htmlspecialchars($product['sku']) . '</td>
                     <td class="category">' . htmlspecialchars($product['category']) . '</td>
-                    <td class="price">$' . number_format($product['price'], 2) . '</td>
+                    <td class="price">$' . number_format((float)$product['price'], 2) . '</td>
                     <td class="stock">
                         <div class="stock-controls">
                             <button class="stock-btn decrease" data-action="decrease" data-id="' . htmlspecialchars($product['id']) . '">-</button>
