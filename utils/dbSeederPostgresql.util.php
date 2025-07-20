@@ -198,36 +198,40 @@ foreach ($seedOrder as $table => $config) {
                 break;
                 
             case 'products':
-                $stmt = $pdo->prepare("
-                    INSERT INTO products (
-                        id, name, description, category, price, cost, sku, 
-                        stock_quantity, weight, is_active
-                    ) VALUES (
-                        :id, :name, :description, :category, :price, :cost, :sku, 
-                        :stock_quantity, :weight, :is_active
-                    )
-                ");
-                
-                foreach ($data as $p) {
-                    $uuid = generate_uuid();
-                    $stmt->execute([
-                        ':id' => $uuid,
-                        ':name' => $p['name'],
-                        ':description' => $p['description'],
-                        ':category' => $p['category'],
-                        ':price' => $p['price'],
-                        ':cost' => $p['cost'],
-                        ':sku' => $p['sku'],
-                        ':stock_quantity' => $p['stock_quantity'],
-                        ':weight' => $p['weight'],
-                        ':is_active' => $p['is_active'] ? 'true' : 'false',
-                    ]);
-                    
-                    $seededData['products'][$p['sku']] = $uuid;
-                    $insertedCount++;
-                    echo "   🛍️  {$p['sku']}: {$p['name']} (\${$p['price']})\n";
-                }
-                break;
+    $stmt = $pdo->prepare("
+        INSERT INTO products (
+            id, name, description, category, price, cost, sku, 
+            stock_quantity, weight, is_active, image_url, image_alt_text, image_caption
+        ) VALUES (
+            :id, :name, :description, :category, :price, :cost, :sku, 
+            :stock_quantity, :weight, :is_active, :image_url, :image_alt_text, :image_caption
+        )
+    ");
+    
+    foreach ($data as $p) {
+        $uuid = generate_uuid();
+        $stmt->execute([
+            ':id' => $uuid,
+            ':name' => $p['name'],
+            ':description' => $p['description'],
+            ':category' => $p['category'],
+            ':price' => $p['price'],
+            ':cost' => $p['cost'],
+            ':sku' => $p['sku'],
+            ':stock_quantity' => $p['stock_quantity'],
+            ':weight' => $p['weight'],
+            ':is_active' => $p['is_active'] ? 'true' : 'false',
+            ':image_url' => $p['image_url'] ?? null,
+            ':image_alt_text' => $p['image_alt_text'] ?? null,
+            ':image_caption' => $p['image_caption'] ?? null
+        ]);
+        
+        $seededData['products'][$p['sku']] = $uuid;
+        $insertedCount++;
+        $imageStatus = !empty($p['image_url']) ? '🖼️' : '📦';
+        echo "   {$imageStatus} {$p['sku']}: {$p['name']} (\${$p['price']})\n";
+    }
+    break;
                 
             case 'orders':
                 if (empty($seededData['customers'])) {
