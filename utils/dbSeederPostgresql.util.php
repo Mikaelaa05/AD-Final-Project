@@ -1,6 +1,9 @@
 <?php
-<?php
 declare(strict_types=1);
+/**
+ * PostgreSQL Database Seeder Utility - Auto-detect Tables
+ * Seeds available database tables with sample data
+ */
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once BASE_PATH . '/vendor/autoload.php';
@@ -33,49 +36,73 @@ $pdo = new PDO($dsn, $username, $password, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 ]);
 
-echo "🌱 **POSTGRESQL DATABASE SEEDER - CORE TABLES**\n";
+echo "🌱 **POSTGRESQL DATABASE SEEDER - AUTO-DETECT**\n";
 echo "================================================\n\n";
 
-$seedOrder = [
-    'users' => [
-        'description' => 'Team members and admin users',
-        'dataFile' => 'users.staticData.php',
-        'depends' => []
-    ],
-    'customers' => [
-        'description' => 'Website signups and customer accounts',
-        'dataFile' => 'customers.staticData.php', 
-        'depends' => []
-    ],
-    'products' => [
-        'description' => 'Product catalog and inventory',
-        'dataFile' => 'products.staticData.php',
-        'depends' => []
-    ],
-    'projects' => [
-        'description' => 'Project management data',
-        'dataFile' => 'projects.staticData.php',
-        'depends' => []
-    ],
-    'tasks' => [
-        'description' => 'Task assignments and tracking',
-        'dataFile' => 'tasks.staticData.php',
-        'depends' => ['projects', 'users']
-    ],
-    'project_users' => [
-        'description' => 'Project-user relationships',
-        'dataFile' => 'project_users.staticData.php',
-        'depends' => ['projects', 'users']
-    ]
+// Fix the path to point to staticData/dummies
+$dummiesPath = BASE_PATH . '/staticData/dummies';
+$dataFiles = glob($dummiesPath . '/*.staticData.php');
+
+if (empty($dataFiles)) {
+    echo "❌ No data files found in: {$dummiesPath}\n";
+    echo "💡 Please create .staticData.php files for your tables\n";
+    
+    // Try alternative paths for debugging
+    $altPaths = [
+        BASE_PATH . '/dummies',
+        BASE_PATH . '/staticData',
+        BASE_PATH . '/data'
+    ];
+    
+    echo "\n🔍 **DEBUGGING - Checking alternative paths:**\n";
+    foreach ($altPaths as $altPath) {
+        if (is_dir($altPath)) {
+            $altFiles = glob($altPath . '/*.staticData.php');
+            echo "✅ Found directory: {$altPath} (" . count($altFiles) . " files)\n";
+            if (!empty($altFiles)) {
+                echo "   Files: " . implode(', ', array_map('basename', $altFiles)) . "\n";
+            }
+        } else {
+            echo "❌ Directory not found: {$altPath}\n";
+        }
+    }
+    exit(1);
+}
+
+$availableTables = [];
+foreach ($dataFiles as $filePath) {
+    $filename = basename($filePath);
+    $tableName = str_replace('.staticData.php', '', $filename);
+    $availableTables[] = $tableName;
+}
+
+// Define seeding order based on dependencies
+$seedingOrder = [
+    'users',
+    'customers', 
+    'products',
+    'projects',
+    'orders',
+    'order_items',
+    'tasks',
+    'project_users'
 ];
 
+// Filter to only include tables we have data for
+$tables = array_intersect($seedingOrder, $availableTables);
+
 $successCount = 0;
-$totalTables = count($seedOrder);
+$totalTables = count($tables);
 $seededData = [];
 
-foreach ($seedOrder as $table => $config) {
+echo "📝 **SEEDING PLAN**\n";
+echo "==================\n";
+echo "📁 Dummies path: {$dummiesPath}\n";
+echo "📊 Found {$totalTables} data files: " . implode(', ', $tables) . "\n";
+echo "🔄 Seeding order (respects dependencies): " . implode(' → ', $tables) . "\n\n";
+
+foreach ($tables as $table) {
     echo "🌱 **Seeding {$table} table**\n";
-    echo "   Purpose: {$config['description']}\n";
     
     try {
         // Check if table exists
@@ -102,7 +129,7 @@ foreach ($seedOrder as $table => $config) {
         }
         
         // Load data file
-        $dataPath = DUMMIES_PATH . '/' . $config['dataFile'];
+        $dataPath = $dummiesPath . "/{$table}.staticData.php";
         
         if (!file_exists($dataPath)) {
             echo "   ⚠️  Data file not found: {$dataPath}\n";
@@ -231,65 +258,11 @@ foreach ($seedOrder as $table => $config) {
                 }
                 break;
                 
-            case 'tasks':
-                // Tasks depend on projects and users
-                if (empty($seededData['projects']) || empty($seededData['users'])) {
-                    echo "   ⚠️  Missing dependency data (projects/users)\n";
-                    break;
-                }
-                
-                $stmt = $pdo->prepare("
-                    INSERT INTO tasks (project_id, assigned_to, title, description, status, due_date)
-                    VALUES (:project_id, :assigned_to, :title, :description, :status, :due_date)
-                ");
-                
-                foreach ($data as $task) {
-                    // Skip if dependencies not available
-                    if ($task['project_id'] === null || $task['assigned_to'] === null) {
-                        continue;
-                    }
-                    
-                    $stmt->execute([
-                        ':project_id' => array_values($seededData['projects'])[0], // Use first project
-                        ':assigned_to' => array_values($seededData['users'])[0], // Use first user
-                        ':title' => $task['title'],
-                        ':description' => $task['description'],
-                        ':status' => $task['status'],
-                        ':due_date' => $task['due_date']
-                    ]);
-                    
-                    $insertedCount++;
-                    echo "   📋 {$task['title']}\n";
-                }
-                break;
-                
-            case 'project_users':
-                // Project users depend on projects and users
-                if (empty($seededData['projects']) || empty($seededData['users'])) {
-                    echo "   ⚠️  Missing dependency data (projects/users)\n";
-                    break;
-                }
-                
-                $stmt = $pdo->prepare("
-                    INSERT INTO project_users (project_id, user_id)
-                    VALUES (:project_id, :user_id)
-                ");
-                
-                // Assign all users to all projects
-                foreach ($seededData['projects'] as $projectId) {
-                    foreach ($seededData['users'] as $userId) {
-                        $stmt->execute([
-                            ':project_id' => $projectId,
-                            ':user_id' => $userId
-                        ]);
-                        $insertedCount++;
-                    }
-                }
-                echo "   🔗 {$insertedCount} project-user relationships created\n";
-                break;
+            // Add other table cases as needed...
                 
             default:
                 echo "   ⚠️  No seeding logic for {$table} table\n";
+                echo "   💡 Add seeding logic to dbSeederPostgresql.util.php\n";
                 break;
         }
         
@@ -313,7 +286,7 @@ echo "✅ Successfully seeded: {$successCount}/{$totalTables} tables\n\n";
 echo "📊 **DATABASE STATISTICS**\n";
 echo "===========================\n";
 
-foreach (array_keys($seedOrder) as $table) {
+foreach ($tables as $table) {
     try {
         $result = $pdo->query("
             SELECT EXISTS (
@@ -336,12 +309,8 @@ foreach (array_keys($seedOrder) as $table) {
 }
 
 if ($successCount === $totalTables) {
-    echo "\n🎯 All tables seeded successfully!\n";
+    echo "\n🎯 All available tables seeded successfully!\n";
     echo "💡 Your database is ready for development!\n";
-    echo "🔐 Default login credentials:\n";
-    echo "   Username: admin\n";
-    echo "   Password: password\n";
-    echo "\n📝 Note: Orders functionality will be created through the application\n";
     exit(0);
 } else {
     echo "\n⚠️  Some tables failed to seed. Check the errors above.\n";
