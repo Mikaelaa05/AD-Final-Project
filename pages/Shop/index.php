@@ -118,9 +118,11 @@ ob_start();
 
                     <div class="product-actions">
                         <?php if ($stockQuantity > 0): ?>
-                            <button class="btn btn-primary">Add to Cart</button>
+                            <button class="btn btn-primary add-to-cart" data-product-id="<?= $product['id'] ?>">Add to Cart</button>
+                            <a href="/pages/Cart" class="btn btn-secondary">View Cart</a>
                         <?php else: ?>
                             <button class="btn btn-primary" disabled>Out of Stock</button>
+                            <a href="/pages/Cart" class="btn btn-secondary">View Cart</a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -150,6 +152,27 @@ $content = ob_get_clean();
 
 <body>
     <?php include LAYOUTS_PATH . '/main.layout.php'; ?>
+
+    <script>
+        // Add to Cart functionality placeholder
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function () {
+                    const productId = this.dataset.productId;
+                    console.log(`Add product ${productId} to cart`);
+
+                    // Placeholder alert - backend will implement actual cart functionality
+                    alert(`Product added to cart! Backend will implement the actual add-to-cart functionality for product ID: ${productId}`);
+
+                    // Backend will implement: addToCart(productId)
+                    // This will:
+                    // 1. Add the product to the user's cart in the database
+                    // 2. Update cart count in the navbar
+                    // 3. Show success message
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
