@@ -1,10 +1,6 @@
 <?php
 <?php
 declare(strict_types=1);
-/**
- * PostgreSQL Database Seeder Utility - Core Tables Only
- * Seeds database tables with sample data (no orders)
- */
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once BASE_PATH . '/vendor/autoload.php';
