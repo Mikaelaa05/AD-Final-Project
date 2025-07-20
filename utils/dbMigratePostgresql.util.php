@@ -25,8 +25,10 @@ echo "=========================================================\n\n";
 
 $tables = [
     'users' => 'Team members and admin users',
-    'customers' => 'Website signups and customer accounts', 
+    'customers' => 'Website signups and customer accounts',
     'products' => 'Product catalog and inventory',
+    'orders' => 'Customer orders and purchase history',
+    'order_items' => 'Order line items and product details',
     'projects' => 'Project management data',
     'tasks' => 'Task assignments and tracking',
     'project_users' => 'Project-user relationships'
@@ -38,15 +40,15 @@ $totalTables = count($tables);
 foreach ($tables as $table => $description) {
     echo "📋 **Migrating {$table} table**\n";
     echo "   Purpose: {$description}\n";
-    
+
     try {
         // Drop existing table if it exists
         echo "   🗑️  Dropping existing {$table} table if exists...\n";
         $pdo->exec("DROP TABLE IF EXISTS {$table} CASCADE;");
-        
+
         // Read model file
         $modelPath = DATABASE_PATH . "/{$table}.model.sql";
-        
+
         if (!file_exists($modelPath)) {
             echo "   ❌ Model file not found: {$modelPath}\n";
             echo "   ⏭️  Skipping {$table} table\n\n";
