@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 /**
- * PostgreSQL Database Reset Utility - All Tables
- * Drops and recreates all database tables
+ * PostgreSQL Database Reset Utility - Core Tables Only
+ * Drops and recreates core database tables (no orders)
  */
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -20,15 +20,13 @@ $pdo = new PDO($dsn, $username, $password, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 ]);
 
-echo "🧹 **POSTGRESQL DATABASE RESET - ALL TABLES**\n";
-echo "==============================================\n\n";
+echo "🧹 **POSTGRESQL DATABASE RESET - CORE TABLES**\n";
+echo "===============================================\n\n";
 
 $tables = [
     'users' => 'Team members and admin users',
     'customers' => 'Website signups and customer accounts', 
     'products' => 'Product catalog and inventory',
-    'orders' => 'Customer orders and purchase history',
-    'order_items' => 'Order line items and product details',
     'projects' => 'Project management data',
     'tasks' => 'Task assignments and tracking',
     'project_users' => 'Project-user relationships'
@@ -37,8 +35,9 @@ $tables = [
 $successCount = 0;
 $totalTables = count($tables);
 
-echo "⚠️  WARNING: This will completely reset all PostgreSQL tables!\n";
-echo "📊 Tables to reset: " . implode(', ', array_keys($tables)) . "\n\n";
+echo "⚠️  WARNING: This will completely reset all core PostgreSQL tables!\n";
+echo "📊 Tables to reset: " . implode(', ', array_keys($tables)) . "\n";
+echo "📝 Note: Orders tables are excluded and will be created dynamically\n\n";
 
 foreach ($tables as $table => $description) {
     echo "🔄 **Resetting {$table} table**\n";
@@ -70,6 +69,7 @@ foreach ($tables as $table => $description) {
         
         if (!file_exists($modelPath)) {
             echo "   ❌ Model file not found: {$modelPath}\n";
+            echo "   📁 Expected path: {$modelPath}\n";
             echo "   ⏭️  Skipping {$table} table\n\n";
             continue;
         }
@@ -88,21 +88,21 @@ foreach ($tables as $table => $description) {
         echo "   🏗️  Recreating table from schema...\n";
         $pdo->exec($sql);
         
-        // Clear all data
-        echo "   🧹 Truncating table data...\n";
-        try {
-            $pdo->exec("TRUNCATE TABLE {$table} RESTART IDENTITY CASCADE;");
-        } catch (PDOException $e) {
-            // Table might be empty or have constraints
-            echo "   💡 Truncate skipped (table may be empty): " . $e->getMessage() . "\n";
+        // Verify table creation
+        $result = $pdo->query("
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = '{$table}'
+            )
+        ");
+        
+        if ($result->fetchColumn()) {
+            echo "   ✅ Table reset successfully\n";
+            $successCount++;
+        } else {
+            echo "   ❌ Table creation verification failed\n";
         }
-        
-        // Verify reset
-        $result = $pdo->query("SELECT COUNT(*) FROM {$table}");
-        $finalCount = $result->fetchColumn();
-        
-        echo "   ✅ Table reset successfully (records: {$finalCount})\n";
-        $successCount++;
         
     } catch (PDOException $e) {
         echo "   ❌ Reset failed: " . $e->getMessage() . "\n";
@@ -118,9 +118,10 @@ echo "====================\n";
 echo "✅ Successfully reset: {$successCount}/{$totalTables} tables\n";
 
 if ($successCount === $totalTables) {
-    echo "🎯 All tables reset successfully!\n";
+    echo "🎯 All core tables reset successfully!\n";
     echo "💡 Next step: Seed the tables with sample data\n";
     echo "   docker exec adfinalproject-service php utils/dbSeederPostgresql.util.php\n";
+    echo "\n📝 Note: Orders functionality will be created through the application\n";
     exit(0);
 } else {
     echo "⚠️  Some tables failed to reset. Check the errors above.\n";
