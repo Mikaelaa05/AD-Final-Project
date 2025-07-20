@@ -1,4 +1,5 @@
 <?php
+<?php
 declare(strict_types=1);
 /**
  * PostgreSQL Database Reset Utility - Core Tables Only
@@ -57,9 +58,13 @@ foreach ($tables as $table => $description) {
         
         if ($tableExists) {
             // Get current record count
-            $countResult = $pdo->query("SELECT COUNT(*) FROM {$table}");
-            $currentCount = $countResult->fetchColumn();
-            echo "   📊 Current records: {$currentCount}\n";
+            try {
+                $countResult = $pdo->query("SELECT COUNT(*) FROM {$table}");
+                $currentCount = $countResult->fetchColumn();
+                echo "   📊 Current records: {$currentCount}\n";
+            } catch (Exception $e) {
+                echo "   📊 Current records: Unable to count\n";
+            }
         } else {
             echo "   📋 Table doesn't exist yet\n";
         }
@@ -69,7 +74,7 @@ foreach ($tables as $table => $description) {
         
         if (!file_exists($modelPath)) {
             echo "   ❌ Model file not found: {$modelPath}\n";
-            echo "   📁 Expected path: {$modelPath}\n";
+            echo "   📁 DATABASE_PATH: " . DATABASE_PATH . "\n";
             echo "   ⏭️  Skipping {$table} table\n\n";
             continue;
         }
@@ -81,12 +86,25 @@ foreach ($tables as $table => $description) {
             continue;
         }
         
-        // Drop and recreate table
+        // Show first 100 characters of SQL for debugging
+        echo "   📄 SQL preview: " . substr(trim($sql), 0, 100) . "...\n";
+        
+        // Drop existing table
         echo "   🗑️  Dropping existing table...\n";
         $pdo->exec("DROP TABLE IF EXISTS {$table} CASCADE;");
         
+        // Recreate table with better error handling
         echo "   🏗️  Recreating table from schema...\n";
-        $pdo->exec($sql);
+        try {
+            $pdo->exec($sql);
+            echo "   ✅ Schema executed successfully\n";
+        } catch (PDOException $sqlError) {
+            echo "   ❌ SQL execution failed for {$table}:\n";
+            echo "   📄 Error: " . $sqlError->getMessage() . "\n";
+            echo "   📄 SQL Content:\n";
+            echo "   " . str_replace("\n", "\n   ", $sql) . "\n";
+            throw $sqlError; // Re-throw to be caught by outer try-catch
+        }
         
         // Verify table creation
         $result = $pdo->query("
@@ -105,9 +123,12 @@ foreach ($tables as $table => $description) {
         }
         
     } catch (PDOException $e) {
-        echo "   ❌ Reset failed: " . $e->getMessage() . "\n";
+        echo "   ❌ Reset failed for {$table}: " . $e->getMessage() . "\n";
+        echo "   📄 Error Code: " . $e->getCode() . "\n";
+        // Continue with next table instead of stopping
     } catch (Exception $e) {
-        echo "   ❌ Error: " . $e->getMessage() . "\n";
+        echo "   ❌ Error processing {$table}: " . $e->getMessage() . "\n";
+        // Continue with next table instead of stopping
     }
     
     echo "\n";
@@ -125,6 +146,8 @@ if ($successCount === $totalTables) {
     exit(0);
 } else {
     echo "⚠️  Some tables failed to reset. Check the errors above.\n";
+    echo "💡 You can run the seeder anyway if enough tables were created:\n";
+    echo "   docker exec adfinalproject-service php utils/dbSeederPostgresql.util.php\n";
     exit(1);
 }
 ?>
