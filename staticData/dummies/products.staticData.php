@@ -56,9 +56,9 @@ return [
         'stock_quantity' => 50,
         'weight' => 0.01,
         'is_active' => true,
-        'image_url' => 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500&h=500&fit=crop',
-        'image_alt_text' => 'Transparent smart contact lens with digital overlay',
-        'image_caption' => 'AR-enabled smart lenses for augmented reality'
+        'image_url' => '/assets/img/smart-lenses.jpg', // Local asset path
+        'image_alt_text' => 'Smart contact lens',
+        'image_caption' => 'AR-enabled smart lenses'
     ],
     [
         'name' => 'Neural Data Port',
@@ -70,9 +70,9 @@ return [
         'stock_quantity' => 30,
         'weight' => 0.1,
         'is_active' => true,
-        'image_url' => 'https://images.unsplash.com/photo-1518709268805-4e9042af2ac5?w=500&h=500&fit=crop',
-        'image_alt_text' => 'Cyberpunk neural data port with glowing connections',
-        'image_caption' => 'High-speed neural interface port for data transfer'
+        // No image_url - will auto-find from /assets/img/ folder
+        'image_alt_text' => 'Neural data port',
+        'image_caption' => 'High-speed neural interface'
     ],
     [
         'name' => 'Holographic Display Watch',
