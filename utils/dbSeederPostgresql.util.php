@@ -1,8 +1,9 @@
 <?php
+<?php
 declare(strict_types=1);
 /**
- * PostgreSQL Database Seeder Utility - All Tables
- * Seeds all database tables with sample data
+ * PostgreSQL Database Seeder Utility - Core Tables Only
+ * Seeds database tables with sample data (no orders)
  */
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -36,8 +37,8 @@ $pdo = new PDO($dsn, $username, $password, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 ]);
 
-echo "🌱 **POSTGRESQL DATABASE SEEDER - ALL TABLES**\n";
-echo "===============================================\n\n";
+echo "🌱 **POSTGRESQL DATABASE SEEDER - CORE TABLES**\n";
+echo "================================================\n\n";
 
 $seedOrder = [
     'users' => [
@@ -54,16 +55,6 @@ $seedOrder = [
         'description' => 'Product catalog and inventory',
         'dataFile' => 'products.staticData.php',
         'depends' => []
-    ],
-    'orders' => [
-        'description' => 'Customer orders and purchase history',
-        'dataFile' => 'orders.staticData.php',
-        'depends' => ['customers', 'products']
-    ],
-    'order_items' => [
-        'description' => 'Order line items and product details',
-        'dataFile' => 'orders.staticData.php', // Same file, different processing
-        'depends' => ['orders', 'products']
     ],
     'projects' => [
         'description' => 'Project management data',
@@ -104,15 +95,6 @@ foreach ($seedOrder as $table => $config) {
             echo "   ❌ Table doesn't exist. Run migration first.\n";
             echo "   ⏭️  Skipping {$table} table\n\n";
             continue;
-        }
-        
-        // Apply model schema first to ensure table is ready
-        $modelPath = DATABASE_PATH . "/{$table}.model.sql";
-        if (file_exists($modelPath)) {
-            $sql = file_get_contents($modelPath);
-            if ($sql !== false && !empty(trim($sql))) {
-                $pdo->exec($sql);
-            }
         }
         
         // Clear existing data
@@ -198,142 +180,38 @@ foreach ($seedOrder as $table => $config) {
                 break;
                 
             case 'products':
-    $stmt = $pdo->prepare("
-        INSERT INTO products (
-            id, name, description, category, price, cost, sku, 
-            stock_quantity, weight, is_active, image_url, image_alt_text, image_caption
-        ) VALUES (
-            :id, :name, :description, :category, :price, :cost, :sku, 
-            :stock_quantity, :weight, :is_active, :image_url, :image_alt_text, :image_caption
-        )
-    ");
-    
-    foreach ($data as $p) {
-        $uuid = generate_uuid();
-        $stmt->execute([
-            ':id' => $uuid,
-            ':name' => $p['name'],
-            ':description' => $p['description'],
-            ':category' => $p['category'],
-            ':price' => $p['price'],
-            ':cost' => $p['cost'],
-            ':sku' => $p['sku'],
-            ':stock_quantity' => $p['stock_quantity'],
-            ':weight' => $p['weight'],
-            ':is_active' => $p['is_active'] ? 'true' : 'false',
-            ':image_url' => $p['image_url'] ?? null,
-            ':image_alt_text' => $p['image_alt_text'] ?? null,
-            ':image_caption' => $p['image_caption'] ?? null
-        ]);
-        
-        $seededData['products'][$p['sku']] = $uuid;
-        $insertedCount++;
-        $imageStatus = !empty($p['image_url']) ? '🖼️' : '📦';
-        echo "   {$imageStatus} {$p['sku']}: {$p['name']} (\${$p['price']})\n";
-    }
-    break;
-                
-            case 'orders':
-                if (empty($seededData['customers'])) {
-                    echo "   ⚠️  Missing dependency data (customers)\n";
-                    break;
-                }
-                
                 $stmt = $pdo->prepare("
-                    INSERT INTO orders (
-                        id, customer_id, order_number, status, total_amount, subtotal, 
-                        tax_amount, shipping_amount, discount_amount, payment_method, 
-                        payment_status, shipping_address, billing_address, notes
+                    INSERT INTO products (
+                        id, name, description, category, price, cost, sku, 
+                        stock_quantity, weight, is_active, image_url, image_alt_text, image_caption
                     ) VALUES (
-                        :id, :customer_id, :order_number, :status, :total_amount, :subtotal,
-                        :tax_amount, :shipping_amount, :discount_amount, :payment_method,
-                        :payment_status, :shipping_address, :billing_address, :notes
+                        :id, :name, :description, :category, :price, :cost, :sku, 
+                        :stock_quantity, :weight, :is_active, :image_url, :image_alt_text, :image_caption
                     )
                 ");
                 
-                foreach ($data as $order) {
-                    try {
-                        // Find customer by email
-                        $customerId = $seededData['customers'][$order['customer_email']] ?? null;
-                        
-                        if (!$customerId) {
-                            echo "   ⚠️  Customer not found: {$order['customer_email']}\n";
-                            continue;
-                        }
-                        
-                        $orderId = generate_uuid();
-                        $orderNumber = 'ORD-' . date('Ymd') . '-' . sprintf('%04d', $insertedCount + 1);
-                        
-                        $stmt->execute([
-                            ':id' => $orderId,
-                            ':customer_id' => $customerId,
-                            ':order_number' => $orderNumber,
-                            ':status' => $order['status'],
-                            ':total_amount' => $order['total_amount'],
-                            ':subtotal' => $order['subtotal'],
-                            ':tax_amount' => $order['tax_amount'],
-                            ':shipping_amount' => $order['shipping_amount'],
-                            ':discount_amount' => $order['discount_amount'],
-                            ':payment_method' => $order['payment_method'],
-                            ':payment_status' => $order['payment_status'],
-                            ':shipping_address' => $order['shipping_address'],
-                            ':billing_address' => $order['billing_address'],
-                            ':notes' => $order['notes']
-                        ]);
-                        
-                        $seededData['orders'][$orderNumber] = [
-                            'id' => $orderId,
-                            'items' => $order['items']
-                        ];
-                        
-                        $insertedCount++;
-                        echo "   📦 {$orderNumber}: {$order['payment_method']} - \${$order['total_amount']} ({$order['status']})\n";
-                        
-                    } catch (Exception $e) {
-                        echo "   ❌ Failed to create order: " . $e->getMessage() . "\n";
-                    }
-                }
-                break;
-
-            case 'order_items':
-                if (empty($seededData['orders']) || empty($seededData['products'])) {
-                    echo "   ⚠️  Missing dependency data (orders/products)\n";
-                    break;
-                }
-                
-                $stmt = $pdo->prepare("
-                    INSERT INTO order_items (order_id, product_id, quantity, unit_price, total_price)
-                    VALUES (:order_id, :product_id, :quantity, :unit_price, :total_price)
-                ");
-                
-                foreach ($seededData['orders'] as $orderNumber => $orderData) {
-                    foreach ($orderData['items'] as $item) {
-                        try {
-                            // Find product by SKU
-                            $productId = $seededData['products'][$item['product_sku']] ?? null;
-                            
-                            if (!$productId) {
-                                echo "   ⚠️  Product not found: {$item['product_sku']}\n";
-                                continue;
-                            }
-                            
-                            $totalPrice = $item['quantity'] * $item['unit_price'];
-                            
-                            $stmt->execute([
-                                ':order_id' => $orderData['id'],
-                                ':product_id' => $productId,
-                                ':quantity' => $item['quantity'],
-                                ':unit_price' => $item['unit_price'],
-                                ':total_price' => $totalPrice
-                            ]);
-                            
-                            $insertedCount++;
-                            echo "   🛒 {$orderNumber}: {$item['product_sku']} x{$item['quantity']} (\${$totalPrice})\n";
-                            
-                        } catch (Exception $e) {
-                            echo "   ❌ Failed to create order item: " . $e->getMessage() . "\n";
-                        }
-                    }
+                foreach ($data as $p) {
+                    $uuid = generate_uuid();
+                    $stmt->execute([
+                        ':id' => $uuid,
+                        ':name' => $p['name'],
+                        ':description' => $p['description'],
+                        ':category' => $p['category'],
+                        ':price' => $p['price'],
+                        ':cost' => $p['cost'],
+                        ':sku' => $p['sku'],
+                        ':stock_quantity' => $p['stock_quantity'],
+                        ':weight' => $p['weight'],
+                        ':is_active' => $p['is_active'] ? 'true' : 'false',
+                        ':image_url' => $p['image_url'] ?? null,
+                        ':image_alt_text' => $p['image_alt_text'] ?? null,
+                        ':image_caption' => $p['image_caption'] ?? null
+                    ]);
+                    
+                    $seededData['products'][$p['sku']] = $uuid;
+                    $insertedCount++;
+                    $imageStatus = !empty($p['image_url']) ? '🖼️' : '📦';
+                    echo "   {$imageStatus} {$p['sku']}: {$p['name']} (\${$p['price']})\n";
                 }
                 break;
                 
@@ -461,37 +339,13 @@ foreach (array_keys($seedOrder) as $table) {
     }
 }
 
-// Show order-specific statistics
-echo "\n💰 **ORDERS STATISTICS**\n";
-echo "=========================\n";
-try {
-    $result = $pdo->query("
-        SELECT 
-            status,
-            COUNT(*) as order_count,
-            SUM(total_amount) as total_revenue
-        FROM orders 
-        GROUP BY status
-        ORDER BY status
-    ");
-    
-    $totalRevenue = 0;
-    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-        echo "📦 {$row['status']}: {$row['order_count']} orders (\${$row['total_revenue']})\n";
-        if ($row['status'] !== 'cancelled') {
-            $totalRevenue += $row['total_revenue'];
-        }
-    }
-    echo "💰 Total Revenue: \${$totalRevenue}\n";
-    
-} catch (Exception $e) {
-    echo "❌ Could not calculate order statistics\n";
-}
-
 if ($successCount === $totalTables) {
     echo "\n🎯 All tables seeded successfully!\n";
     echo "💡 Your database is ready for development!\n";
-    echo "🛒 Orders system is fully functional!\n";
+    echo "🔐 Default login credentials:\n";
+    echo "   Username: admin\n";
+    echo "   Password: password\n";
+    echo "\n📝 Note: Orders functionality will be created through the application\n";
     exit(0);
 } else {
     echo "\n⚠️  Some tables failed to seed. Check the errors above.\n";
