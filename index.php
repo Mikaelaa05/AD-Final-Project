@@ -10,7 +10,7 @@ require_once UTILS_PATH . '/auth.util.php';
 session_start();
 
 if (!isset($_SESSION['user'])) {
-    include ERRORS_PATH . '/unauthorized.error.php';
+    header('Location: /pages/Login/index.php');
     exit;
 }
 
