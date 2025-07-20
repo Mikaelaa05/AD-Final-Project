@@ -5,6 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/bootstrap.php';
+require_once UTILS_PATH . '/auth.util.php';
 
 session_start();
 
