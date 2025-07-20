@@ -288,16 +288,26 @@ body::before {
   }
 }
 
-/* Footer styling for auth pages */
+/* Footer styling for auth pages - matching dashboard style */
 footer {
-  position: fixed !important;
-  bottom: 0 !important;
-  width: 100% !important;
-  background: rgba(0, 0, 0, 0.8) !important;
-  color: #00ffff !important;
+  background: linear-gradient(145deg, rgba(26, 26, 26, 0.4), rgba(15, 15, 15, 0.4)) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(51, 51, 51, 0.6) !important;
+  border-radius: 15px !important;
+  color: #cccccc !important;
   text-align: center !important;
-  padding: 10px !important;
-  font-size: 0.8rem !important;
-  backdrop-filter: blur(10px) !important;
-  border-top: 1px solid rgba(0, 255, 255, 0.3) !important;
+  padding: 20px 0 !important;
+  margin-top: 30px !important;
+  margin-left: 20px !important;
+  margin-right: 20px !important;
+  margin-bottom: 20px !important;
+  position: relative !important;
+  bottom: auto !important;
+  width: auto !important;
+  font-size: 0.9rem !important;
+}
+
+footer p {
+  margin: 0 !important;
+  font-family: Arial, sans-serif !important;
 }
