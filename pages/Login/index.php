@@ -18,15 +18,21 @@ $pageTitle = 'Login';
 // Define the content for the layout
 ob_start();
 ?>
+<div class="brand-container">
+    <div class="brand-text">
+        <span class="sin">SIN</span><span class="thesize">THESIZE</span>
+    </div>
+    <div class="tagline">Access Your Digital Realm</div>
+</div>
 <h2>Login</h2>
 <form method="POST">
     <input name="username" placeholder="Username" required>
     <input name="password" type="password" placeholder="Password" required>
-    <button type="submit">Login</button>
+    <button type="submit">Access System</button>
     <?php if (isset($error))
         echo "<p style='color:red;'>$error</p>"; ?>
 </form>
-<a href="/pages/SignUp/index.php">Don't have an account? Sign up here.</a>
+<a href="/pages/SignUp/index.php">Don't have an account? Join the collective.</a>
 <?php
 $content = ob_get_clean();
 

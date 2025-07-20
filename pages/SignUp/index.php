@@ -51,13 +51,19 @@ $pageTitle = 'Register';
 // Define the content for the layout
 ob_start();
 ?>
-<h2>Sign Up</h2>
+<div class="brand-container">
+    <div class="brand-text">
+        <span class="sin">SIN</span><span class="thesize">THESIZE</span>
+    </div>
+    <div class="tagline">Join the Collective</div>
+</div>
+<h2>Register</h2>
 <form method="POST">
     <input name="username" placeholder="Username" required>
     <input name="first_name" placeholder="First Name" required>
     <input name="last_name" placeholder="Last Name" required>
     <input name="password" type="password" placeholder="Password" required>
-    <button type="submit">Register</button>
+    <button type="submit">Enter the System</button>
 </form>
 <?php
 if (isset($error))
@@ -65,7 +71,7 @@ if (isset($error))
 if (isset($success))
     echo "<p style='color:green;'>$success</p>";
 ?>
-<a href="/pages/Login/index.php">Back to Login</a>
+<a href="/pages/Login/index.php">Return to Access Portal</a>
 <?php
 $content = ob_get_clean();
 //TODO Backen, fix Signup please
