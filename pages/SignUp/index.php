@@ -23,25 +23,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $first_name = $_POST['first_name'] ?? '';
     $last_name = $_POST['last_name'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $phone = $_POST['phone'] ?? '';
+    $address = $_POST['address'] ?? '';
     $password = $_POST['password'] ?? '';
-    $role = $_POST['role'] ?? 'user';
 
-    // Check if username already exists
-    if (findUserByUsername($pdo, $username)) {
+    // Check if username already exists in either users or customers table
+    if (findUserOrCustomerByUsername($pdo, $username)) {
         $error = "Username already taken.";
     } else {
-        $stmt = $pdo->prepare("
-            INSERT INTO users (username, first_name, last_name, password, role)
-            VALUES (:username, :first_name, :last_name, :password, :role)
-        ");
-        $stmt->execute([
-            ':username' => $username,
-            ':first_name' => $first_name,
-            ':last_name' => $last_name,
-            ':password' => password_hash($password, PASSWORD_DEFAULT),
-            ':role' => $role,
-        ]);
-        $success = "Registration successful! You can now <a href='/pages/Login/index.php'>login</a>.";
+        // Check if email already exists in customers table
+        $emailCheckStmt = $pdo->prepare("SELECT * FROM customers WHERE email = :email LIMIT 1");
+        $emailCheckStmt->execute([':email' => $email]);
+        if ($emailCheckStmt->fetch(PDO::FETCH_ASSOC)) {
+            $error = "Email already registered.";
+        } else {
+            // Insert into customers table
+            $fullName = trim($first_name . ' ' . $last_name);
+            $stmt = $pdo->prepare("
+                INSERT INTO customers (username, name, email, password, phone, address)
+                VALUES (:username, :name, :email, :password, :phone, :address)
+            ");
+            $stmt->execute([
+                ':username' => $username,
+                ':name' => $fullName,
+                ':email' => $email,
+                ':password' => password_hash($password, PASSWORD_DEFAULT),
+                ':phone' => $phone,
+                ':address' => $address,
+            ]);
+            $success = "Registration successful! You can now <a href='/pages/Login/index.php'>login</a>.";
+        }
     }
 }
 
@@ -62,6 +74,9 @@ ob_start();
     <input name="username" placeholder="Username" required>
     <input name="first_name" placeholder="First Name" required>
     <input name="last_name" placeholder="Last Name" required>
+    <input name="email" type="email" placeholder="Email" required>
+    <input name="phone" type="tel" placeholder="Phone (optional)">
+    <textarea name="address" placeholder="Address (optional)" rows="3"></textarea>
     <input name="password" type="password" placeholder="Password" required>
     <button type="submit">Enter the System</button>
 </form>

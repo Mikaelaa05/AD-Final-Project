@@ -2,8 +2,8 @@
     <a href="/">Home</a>
     <a href="/pages/Shop">Shop</a>
     <a href="/pages/Cart" class="cart-link">
-        Cart 
-        <?php 
+        Cart
+        <?php
         $cartCount = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
         if ($cartCount > 0): 
         ?>
