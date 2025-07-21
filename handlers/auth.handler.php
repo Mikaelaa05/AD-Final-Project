@@ -24,12 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($user && verifyPassword($password, $user['password'])) {
         $_SESSION['user'] = $user;
         
-        // Redirect based on account type
-        if ($user['account_type'] === 'user' && isAdmin()) {
-            header('Location: /pages/Admin');
-        } else {
-            header('Location: /pages/Shop');
-        }
+        // Redirect all users to home page after login
+        header('Location: /');
         exit;
     }
     
