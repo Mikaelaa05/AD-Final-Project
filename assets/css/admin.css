@@ -183,41 +183,50 @@
 }
 
 /* Stock Controls */
+.stock-display {
+  margin-bottom: 0.5rem;
+}
+
+.stock-amount {
+  font-size: 0.9rem;
+  color: #333;
+}
+
 .stock-controls {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.stock-btn {
-  width: 30px;
-  height: 30px;
-  border: none;
-  border-radius: 50%;
-  background: #667eea;
+.stock-input {
+  width: 60px;
+  padding: 0.25rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.stock-input::placeholder {
+  color: #999;
+  font-size: 0.75rem;
+}
+
+.confirm-btn {
+  background: #28a745;
   color: white;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: bold;
   transition: all 0.3s ease;
 }
 
-.stock-btn:hover {
-  background: #5a6fd8;
-  transform: scale(1.1);
-}
-
-.stock-btn.decrease {
-  background: #dc3545;
-}
-
-.stock-btn.decrease:hover {
-  background: #c82333;
-}
-
-.stock-count {
-  font-weight: 600;
-  min-width: 30px;
-  text-align: center;
+.confirm-btn:hover {
+  background: #218838;
+  transform: translateY(-1px);
 }
 
 /* Status Badge */
