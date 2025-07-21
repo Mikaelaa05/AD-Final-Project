@@ -182,7 +182,7 @@ body {
   border-radius: 12px;
   padding: 25px;
   display: grid;
-  grid-template-columns: 100px 1fr auto auto auto auto;
+  grid-template-columns: 1fr auto auto auto auto;
   gap: 20px;
   align-items: center;
   transition: all 0.3s ease;
@@ -235,6 +235,38 @@ body {
   object-fit: cover;
   -o-object-position: center;
   object-position: center;
+}
+
+/* Cart Product Images - Matching Shop Image System */
+.cart-product-image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.cart-web-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Product-specific background images for cart */
+.product-1-image { background-image: url('/pages/Shop/assets/img/IonpulseByte.png'); }
+.product-2-image { background-image: url('/pages/Shop/assets/img/NeuroSparkNode.png'); }
+.product-3-image { background-image: url('/pages/Shop/assets/img/TeslaNode.png'); }
+.product-4-image { background-image: url('/pages/Shop/assets/img/IonpulseSpineMkV1.png'); }
+.product-5-image { background-image: url('/pages/Shop/assets/img/Neuroplasticity.png'); }
+.product-6-image { background-image: url('/pages/Shop/assets/img/SynthlungUpgrade.png'); }
+.product-7-image { background-image: url('/pages/Shop/assets/img/SynthCellBatteryPack.png'); }
+.product-8-image { background-image: url('/pages/Shop/assets/img/OverDriveCapsule.png'); }
+.product-9-image { background-image: url('/pages/Shop/assets/img/EnergyPacks.png'); }
+.product-10-image { background-image: url('/pages/Shop/assets/img/IonFuelVials.png'); }
+.product-default-image { 
+  background-image: url('/assets/img/nyebe_white.png'); 
+  background-size: contain;
 }
 
 .item-details {

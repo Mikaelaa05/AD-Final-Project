@@ -124,13 +124,29 @@ body::before {
   backdrop-filter: blur(10px);
 }
 
-.auth-container input::placeholder {
+.auth-container textarea {
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(0, 255, 255, 0.3);
+  border-radius: 10px;
+  font-size: 16px;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  resize: vertical;
+  min-height: 80px;
+}
+
+.auth-container input::placeholder,
+.auth-container textarea::placeholder {
   color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-.auth-container input:focus {
+.auth-container input:focus,
+.auth-container textarea:focus {
   outline: none;
   border-color: #00ffff;
   box-shadow: 

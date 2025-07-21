@@ -143,6 +143,83 @@ body {
   justify-content: center;
 }
 
+/* CSS-based image display */
+.product-image.css-image {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  filter: brightness(0.9) contrast(1.1);
+}
+
+/* Web URL image display */
+.product-image.web-image {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.product-image.web-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  filter: brightness(0.9) contrast(1.1);
+}
+
+/* Error state for failed web images */
+.product-image.image-error {
+  background: linear-gradient(45deg, rgba(255, 0, 64, 0.1), rgba(0, 255, 255, 0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+}
+
+.product-image.image-error::after {
+  content: "📷 Image not available";
+}
+
+/* Product-specific background images */
+.product-image[data-product="cybereyeimplant"] {
+  background-image: url('/assets/img/TeslaNode.png');
+}
+
+.product-image[data-product="cyberneticarmprosthetic"] {
+  background-image: url('/assets/img/IonpulseSpineMkV1.png');
+}
+
+.product-image[data-product="holographicdisplaywatch"] {
+  background-image: url('/assets/img/EnergyPacks.png');
+}
+
+.product-image[data-product="ionfuelvials"] {
+  background-image: url('/assets/img/IonFuelVials.png');
+}
+
+.product-image[data-product="neuraldataport"] {
+  background-image: url('/assets/img/Neuroplasticity.png');
+}
+
+.product-image[data-product="neuralinterfacechip"] {
+  background-image: url('/assets/img/IonpulseByte.png');
+}
+
+.product-image[data-product="neurosparknode"] {
+  background-image: url('/assets/img/NeuroSparkNode.png');
+}
+
+.product-image[data-product="portablecyberdeck"] {
+  background-image: url('/assets/img/OverDriveCapsule.png');
+}
+
+.product-image[data-product="smartcontactlenses"] {
+  background-image: url('/assets/img/SynthlungUpgrade.png');
+}
+
+.product-image[data-product="synthcellbatterypack"] {
+  background-image: url('/assets/img/SynthCellBatteryPack.png');
+}
+
 .product-image img {
   width: 100%;
   height: 100%;
@@ -152,6 +229,16 @@ body {
 }
 
 .product-card:hover .product-image img {
+  transform: scale(1.05);
+  filter: brightness(1) contrast(1.2);
+}
+
+.product-card:hover .product-image.css-image {
+  transform: scale(1.05);
+  filter: brightness(1) contrast(1.2);
+}
+
+.product-card:hover .product-image.web-image img {
   transform: scale(1.05);
   filter: brightness(1) contrast(1.2);
 }
