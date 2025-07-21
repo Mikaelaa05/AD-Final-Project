@@ -213,8 +213,15 @@ foreach ($tables as $table) {
                     )
                 ");
                 
+                $productCount = 0;
                 foreach ($data as $p) {
                     $uuid = generate_uuid();
+                    $productCount++;
+                    
+                    // First 10 products use CSS-based images (NULL image_url)
+                    // New products (11+) can use web URLs from the data file
+                    $useImageUrl = ($productCount > 10) ? ($p['image_url'] ?? null) : null;
+                    
                     $stmt->execute([
                         ':id' => $uuid,
                         ':name' => $p['name'],
@@ -226,15 +233,24 @@ foreach ($tables as $table) {
                         ':stock_quantity' => $p['stock_quantity'],
                         ':weight' => $p['weight'],
                         ':is_active' => $p['is_active'] ? 'true' : 'false',
-                        ':image_url' => $p['image_url'] ?? null,
+                        ':image_url' => $useImageUrl,
                         ':image_alt_text' => $p['image_alt_text'] ?? null,
                         ':image_caption' => $p['image_caption'] ?? null
                     ]);
                     
                     $seededData['products'][$p['sku']] = $uuid;
                     $insertedCount++;
-                    $imageStatus = !empty($p['image_url']) ? '🖼️' : '📦';
-                    echo "   {$imageStatus} {$p['sku']}: {$p['name']} (\${$p['price']})\n";
+                    
+                    // Show appropriate icon based on image type
+                    if ($productCount <= 10) {
+                        $imageStatus = '🎨'; // CSS-based
+                        $imageNote = '(CSS-based)';
+                    } else {
+                        $imageStatus = !empty($useImageUrl) ? '🖼️' : '📦';
+                        $imageNote = !empty($useImageUrl) ? '(Web URL)' : '';
+                    }
+                    
+                    echo "   {$imageStatus} {$p['sku']}: {$p['name']} (\${$p['price']}) {$imageNote}\n";
                 }
                 break;
                 
