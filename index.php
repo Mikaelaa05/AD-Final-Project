@@ -15,14 +15,28 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
+$accountType = $user['account_type'] ?? 'user';
 $pageTitle = 'Dashboard';
+
+// Redirect customers to shop, admins to admin panel
+if ($accountType === 'customer') {
+    header('Location: /pages/Shop');
+    exit;
+} else if (isAdmin()) {
+    header('Location: /pages/Admin');
+    exit;
+} else {
+    // Regular users go to shop as well
+    header('Location: /pages/Shop');
+    exit;
+}
 
 // Define the content for the layout
 ob_start();
 ?>
 <div class="dashboard-welcome">
-    <h1>Welcome, <?= htmlspecialchars($user['first_name']) ?>!</h1>
-    <p>Your role: <?= htmlspecialchars($user['role']) ?></p>
+    <h1>Welcome, <?= htmlspecialchars($displayName) ?>!</h1>
+    <p>Your role: <?= htmlspecialchars($displayRole) ?></p>
     <div class="dashboard-actions">
         <a href="/handlers/logout.handler.php" class="logout">Logout</a>
     </div>

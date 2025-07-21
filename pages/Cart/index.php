@@ -7,6 +7,7 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../../bootstrap.php';
 require_once UTILS_PATH . '/auth.util.php';
 require_once UTILS_PATH . '/envSetter.util.php';
+require_once UTILS_PATH . '/cart.util.php';
 
 session_start();
 
@@ -15,43 +16,16 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
-// Sample cart data for UI demonstration (backend will replace this)
-$sampleCartItems = [
-    [
-        'id' => 1,
-        'product_name' => 'IONFUEL VIALS',
-        'product_sku' => 'ION-FUEL-001',
-        'price' => 89.99,
-        'quantity' => 2,
-        'category' => 'Enhancement',
-        'description' => 'High-performance energy enhancement vials for extended neural activity.',
-        'image' => 'IonFuelVials.png'
-    ],
-    [
-        'id' => 2,
-        'product_name' => 'NEUROSPARK NODE',
-        'product_sku' => 'NEURO-NODE-003',
-        'price' => 299.99,
-        'quantity' => 1,
-        'category' => 'Cybernetic',
-        'description' => 'Advanced neural processing node for enhanced cognitive functions.',
-        'image' => 'NeuroSparkNode.png'
-    ],
-    [
-        'id' => 3,
-        'product_name' => 'SYNTHCELL BATTERY PACK',
-        'product_sku' => 'SYNTH-BAT-005',
-        'price' => 149.99,
-        'quantity' => 1,
-        'category' => 'Power',
-        'description' => 'High-capacity synthetic power cells for extended operation.',
-        'image' => 'SynthCellBatteryPack.png'
-    ]
-];
+// Debug: Log user session data
+$user = $_SESSION['user'];
+error_log("Cart page - User session data: " . json_encode($user));
+
+// Get cart items from session
+$cartItems = $_SESSION['cart'] ?? [];
 
 // Calculate totals
 $subtotal = 0;
-foreach ($sampleCartItems as $item) {
+foreach ($cartItems as $item) {
     $subtotal += $item['price'] * $item['quantity'];
 }
 $tax = $subtotal * 0.08; // 8% tax
@@ -71,25 +45,20 @@ ob_start();
         <p>Review your cybernetic selections before checkout</p>
     </div>
 
-    <?php if (!empty($sampleCartItems)): ?>
+    <?php if (!empty($cartItems)): ?>
         <div class="cart-content">
             <!-- Cart Items Section -->
             <div class="cart-items-section">
                 <div class="cart-items-header">
-                    <h2>🛒 Cart Items (<?= count($sampleCartItems) ?>)</h2>
+                    <h2>🛒 Cart Items (<?= count($cartItems) ?>)</h2>
                     <button class="btn btn-secondary clear-cart" id="clearCartBtn">
                         🗑️ Clear Cart
                     </button>
                 </div>
 
                 <div class="cart-items">
-                    <?php foreach ($sampleCartItems as $item): ?>
+                    <?php foreach ($cartItems as $item): ?>
                         <div class="cart-item" data-item-id="<?= $item['id'] ?>">
-                            <div class="item-image">
-                                <img src="/pages/Shop/assets/img/<?= $item['image'] ?>"
-                                    alt="<?= htmlspecialchars($item['product_name']) ?>" onerror="this.style.display='none'">
-                            </div>
-
                             <div class="item-details">
                                 <h3 class="item-name"><?= htmlspecialchars($item['product_name']) ?></h3>
                                 <p class="item-sku">SKU: <?= htmlspecialchars($item['product_sku']) ?></p>
@@ -194,7 +163,7 @@ ob_start();
 </div>
 
 <script>
-    // Placeholder JavaScript for cart interactions
+    // Cart interactions with AJAX
     document.addEventListener('DOMContentLoaded', function () {
         // Quantity Controls
         document.querySelectorAll('.qty-btn').forEach(button => {
@@ -203,19 +172,17 @@ ob_start();
                 const itemId = this.dataset.id;
                 const input = this.parentElement.querySelector('.qty-input');
                 let currentQty = parseInt(input.value);
+                let newQty = currentQty;
 
                 if (action === 'increase' && currentQty < 99) {
-                    input.value = currentQty + 1;
-                    console.log(`Increase quantity for item ${itemId} to ${currentQty + 1}`);
-                    // Backend will implement: updateCartQuantity(itemId, currentQty + 1)
+                    newQty = currentQty + 1;
                 } else if (action === 'decrease' && currentQty > 1) {
-                    input.value = currentQty - 1;
-                    console.log(`Decrease quantity for item ${itemId} to ${currentQty - 1}`);
-                    // Backend will implement: updateCartQuantity(itemId, currentQty - 1)
+                    newQty = currentQty - 1;
+                } else {
+                    return; // No change needed
                 }
 
-                // Placeholder: Update totals (backend will handle this)
-                updateCartTotals();
+                updateCartQuantity(itemId, newQty, input);
             });
         });
 
@@ -224,44 +191,364 @@ ob_start();
             button.addEventListener('click', function () {
                 const itemId = this.dataset.id;
                 if (confirm('Are you sure you want to remove this item from your cart?')) {
-                    console.log(`Remove item ${itemId} from cart`);
-                    // Backend will implement: removeFromCart(itemId)
-                    alert('Remove item functionality will be implemented by backend');
+                    removeFromCart(itemId);
                 }
             });
         });
 
-        // Edit Item
+        // Edit Item (placeholder - could open a modal or redirect)
         document.querySelectorAll('.btn-edit').forEach(button => {
             button.addEventListener('click', function () {
                 const itemId = this.dataset.id;
-                console.log(`Edit item ${itemId}`);
-                // Backend will implement: editCartItem(itemId)
-                alert('Edit item functionality will be implemented by backend');
+                showNotification('Edit functionality coming soon!', 'info');
             });
         });
 
         // Clear Cart
         document.getElementById('clearCartBtn')?.addEventListener('click', function () {
             if (confirm('Are you sure you want to clear your entire cart?')) {
-                console.log('Clear entire cart');
-                // Backend will implement: clearCart()
-                alert('Clear cart functionality will be implemented by backend');
+                clearCart();
             }
         });
 
         // Checkout
         document.getElementById('checkoutBtn')?.addEventListener('click', function () {
-            console.log('Proceed to checkout');
-            // Backend will implement: proceedToCheckout()
-            alert('Checkout functionality will be implemented by backend');
+            const button = this;
+            const originalText = button.innerHTML;
+            
+            // Disable button and show loading state
+            button.disabled = true;
+            button.innerHTML = '⏳ Processing...';
+            
+            fetch('/handlers/checkout.handler.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=checkout'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP error! status: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Checkout response:', data);
+                if (data.success) {
+                    // Show success popup
+                    showOrderSuccessPopup(data.order_number, data.total_amount);
+                    
+                    // Clear cart display after short delay
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                } else {
+                    showNotification(data.message || 'Order processing failed', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Checkout error:', error);
+                showNotification('An error occurred during checkout: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Re-enable button
+                button.disabled = false;
+                button.innerHTML = originalText;
+            });
         });
 
-        // Placeholder function to update totals
-        function updateCartTotals() {
-            console.log('Update cart totals - backend will implement this');
-            // Backend will recalculate and update all totals
+        // Update cart quantity
+        function updateCartQuantity(productId, quantity, inputElement) {
+            const formData = new FormData();
+            formData.append('action', 'update');
+            formData.append('product_id', productId);
+            formData.append('quantity', quantity);
+
+            fetch('/handlers/cart.handler.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    inputElement.value = quantity;
+                    updateCartTotals(data.cart_summary);
+                    showNotification('Cart updated successfully!', 'success');
+                    
+                    // Broadcast stock update if available
+                    if (data.product_id && data.new_stock !== undefined) {
+                        broadcastStockUpdate(data.product_id, data.new_stock);
+                    }
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating cart:', error);
+                showNotification('Failed to update cart. Please refresh the page.', 'error');
+            });
         }
+
+        // Remove from cart
+        function removeFromCart(productId) {
+            const formData = new FormData();
+            formData.append('action', 'remove');
+            formData.append('product_id', productId);
+
+            fetch('/handlers/cart.handler.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the item from the DOM
+                    const cartItem = document.querySelector(`[data-item-id="${productId}"]`);
+                    if (cartItem) {
+                        cartItem.remove();
+                    }
+                    
+                    // Check if cart is now empty
+                    const remainingItems = document.querySelectorAll('.cart-item');
+                    if (remainingItems.length === 0) {
+                        location.reload(); // Reload to show empty cart message
+                    } else {
+                        updateCartTotals(data.cart_summary);
+                        updateCartCount(data.cart_count);
+                    }
+                    
+                    // Broadcast stock update if available
+                    if (data.product_id && data.new_stock !== undefined) {
+                        broadcastStockUpdate(data.product_id, data.new_stock);
+                    }
+                    
+                    showNotification('Item removed from cart!', 'success');
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error removing from cart:', error);
+                showNotification('Failed to remove item. Please refresh the page.', 'error');
+            });
+        }
+
+        // Clear cart
+        function clearCart() {
+            const formData = new FormData();
+            formData.append('action', 'clear');
+
+            fetch('/handlers/cart.handler.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Reload to show empty cart
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error clearing cart:', error);
+                showNotification('Failed to clear cart. Please refresh the page.', 'error');
+            });
+        }
+
+        // Update cart totals on the page
+        function updateCartTotals(cartSummary) {
+            const subtotalElement = document.querySelector('.subtotal');
+            const taxElement = document.querySelector('.tax');
+            const shippingElement = document.querySelector('.shipping');
+            const totalElement = document.querySelector('.total');
+
+            if (subtotalElement) subtotalElement.textContent = '$' + cartSummary.subtotal;
+            if (taxElement) taxElement.textContent = '$' + cartSummary.tax;
+            if (shippingElement) {
+                shippingElement.textContent = cartSummary.shipping === 'FREE' ? 'FREE' : '$' + cartSummary.shipping;
+                shippingElement.className = cartSummary.shipping === 'FREE' ? 'shipping free' : 'shipping';
+            }
+            if (totalElement) totalElement.textContent = '$' + cartSummary.total;
+
+            // Update shipping notice
+            const shippingNotice = document.querySelector('.shipping-notice');
+            if (shippingNotice && cartSummary.amount_for_free_shipping > 0) {
+                shippingNotice.innerHTML = `💡 Add $${cartSummary.amount_for_free_shipping.toFixed(2)} more for free shipping!`;
+            } else if (shippingNotice) {
+                shippingNotice.style.display = 'none';
+            }
+        }
+
+        // Update cart count in header
+        function updateCartCount(count) {
+            const cartCountElement = document.querySelector('.cart-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = count;
+            }
+            
+            // Update cart items header
+            const cartItemsHeader = document.querySelector('.cart-items-section h2');
+            if (cartItemsHeader) {
+                cartItemsHeader.textContent = `🛒 Cart Items (${count})`;
+            }
+        }
+
+        // Notification function
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(notification => notification.remove());
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: bold;
+                z-index: 10000;
+                min-width: 300px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            // Set background color based on type
+            if (type === 'success') {
+                notification.style.backgroundColor = '#00ff7f';
+                notification.style.color = '#000';
+            } else if (type === 'error') {
+                notification.style.backgroundColor = '#ff0040';
+            } else {
+                notification.style.backgroundColor = '#00ffff';
+                notification.style.color = '#000';
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Auto-remove notification after 5 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+        }
+
+        // Function to show order success popup
+        function showOrderSuccessPopup(orderNumber, totalAmount) {
+            const popup = document.createElement('div');
+            popup.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease-out;
+            `;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+                border: 2px solid #00ff7f;
+                border-radius: 15px;
+                padding: 40px;
+                text-align: center;
+                color: white;
+                max-width: 500px;
+                width: 90%;
+                box-shadow: 0 20px 40px rgba(0, 255, 127, 0.2);
+                animation: slideInUp 0.5s ease-out;
+            `;
+            
+            modal.innerHTML = `
+                <div style="font-size: 4rem; margin-bottom: 20px;">🎉</div>
+                <h2 style="color: #00ff7f; margin-bottom: 15px; font-size: 2rem;">Order Successful!</h2>
+                <p style="margin-bottom: 10px; font-size: 1.1rem;">Your order has been placed successfully.</p>
+                <div style="background: rgba(0, 255, 127, 0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <p style="margin: 5px 0;"><strong>Order Number:</strong> <span style="color: #00ff7f;">${orderNumber}</span></p>
+                    <p style="margin: 5px 0;"><strong>Total Amount:</strong> <span style="color: #00ff7f;">$${totalAmount}</span></p>
+                </div>
+                <p style="margin-bottom: 25px; color: #ccc;">You will receive a confirmation shortly.</p>
+                <button id="closeSuccessPopup" style="
+                    background: #00ff7f;
+                    color: #000;
+                    border: none;
+                    padding: 12px 30px;
+                    border-radius: 8px;
+                    font-weight: bold;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                ">Continue Shopping</button>
+            `;
+            
+            popup.appendChild(modal);
+            document.body.appendChild(popup);
+            
+            // Close popup functionality
+            document.getElementById('closeSuccessPopup').addEventListener('click', () => {
+                popup.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => popup.remove(), 300);
+                window.location.href = '/pages/Shop';
+            });
+            
+            // Auto-close after 10 seconds
+            setTimeout(() => {
+                if (popup.parentNode) {
+                    popup.style.animation = 'fadeOut 0.3s ease-out';
+                    setTimeout(() => popup.remove(), 300);
+                }
+            }, 10000);
+        }
+
+        // Function to broadcast stock updates to other tabs
+        function broadcastStockUpdate(productId, newStock) {
+            if (newStock === 'reload_needed') return; // Don't broadcast reload signals
+            
+            localStorage.setItem('cart_stock_update', JSON.stringify({
+                productId: productId,
+                newStock: newStock,
+                timestamp: Date.now()
+            }));
+            // Remove the item immediately to allow multiple updates
+            setTimeout(() => localStorage.removeItem('cart_stock_update'), 100);
+        }
+        
+        // Add CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+            @keyframes slideInUp {
+                from { transform: translateY(50px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
     });
 </script>
 
