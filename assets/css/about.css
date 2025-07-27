@@ -1,0 +1,477 @@
+/* About Page Styles */
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap');
+
+/* Override body background for About page */
+body {
+  background-image: url('/pages/About/assets/img/Background.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+.about-container {
+  min-height: 100vh;
+  background: rgba(10, 10, 10, 0.3);
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(0, 255, 127, 0.05) 0%, transparent 50%);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Dela Gothic One', Arial, sans-serif;
+  color: #ffffff;
+  padding: 20px;
+  margin: 20px;
+}
+
+/* Hero Section */
+.about-hero {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(20, 20, 20, 0.3) 100%);
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #ffffff;
+  position: relative;
+  border-bottom: 2px solid #00ffff;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+  backdrop-filter: blur(15px);
+  border-radius: 15px;
+  margin: 20px 0;
+}
+
+.hero-content {
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.company-title {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+  letter-spacing: 2px;
+  color: #00ffff;
+  animation: glow 2s ease-in-out infinite alternate;
+  font-family: 'Dela Gothic One', cursive;
+}
+
+.company-title .red-text {
+  color: #ff0040;
+  text-shadow: 0 0 20px rgba(255, 0, 64, 0.8);
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 20px rgba(0, 255, 255, 0.8); }
+  to { text-shadow: 0 0 30px rgba(0, 255, 255, 1), 0 0 40px rgba(0, 255, 255, 0.8); }
+}
+
+.company-tagline {
+  font-size: 1.5rem;
+  font-weight: 300;
+  opacity: 0.9;
+  margin: 0;
+  color: #cccccc;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  font-family: Arial, sans-serif;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Company Description */
+.company-description {
+  padding: 80px 0;
+  background: rgba(17, 17, 17, 0.4);
+  border-top: 1px solid rgba(51, 51, 51, 0.6);
+  border-bottom: 1px solid rgba(51, 51, 51, 0.6);
+  backdrop-filter: blur(15px);
+  border-radius: 15px;
+  margin: 20px 0;
+}
+
+.company-description h2 {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #00ff7f;
+  font-weight: 600;
+  text-shadow: 0 0 15px rgba(0, 255, 127, 0.8);
+  letter-spacing: 1px;
+  font-family: 'Dela Gothic One', cursive;
+}
+
+.description-content {
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.8;
+  background: rgba(20, 20, 20, 0.4);
+  padding: 3rem;
+  border-radius: 15px;
+  border: 1px solid rgba(51, 51, 51, 0.6);
+  box-shadow: 0 0 30px rgba(0, 255, 127, 0.1);
+  backdrop-filter: blur(20px);
+}
+
+.lead-text {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #ffffff;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+  font-family: Arial, sans-serif;
+}
+
+.description-content p {
+  font-size: 1.1rem;
+  color: #cccccc;
+  margin-bottom: 1.5rem;
+  font-family: Arial, sans-serif;
+}
+
+/* Team Section */
+.team-section {
+  padding: 80px 0;
+  background: rgba(13, 13, 13, 0.4);
+  position: relative;
+  backdrop-filter: blur(15px);
+  border-radius: 15px;
+  margin: 20px 0;
+}
+
+.team-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(90deg, transparent 0%, rgba(255, 0, 255, 0.03) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+.team-section h2 {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #ff00ff;
+  font-weight: 600;
+  text-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+  letter-spacing: 1px;
+  font-family: 'Dela Gothic One', cursive;
+}
+
+.team-intro {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #cccccc;
+  margin-bottom: 4rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: Arial, sans-serif;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 3rem;
+  margin-top: 3rem;
+}
+
+.team-member {
+  background: linear-gradient(145deg, rgba(26, 26, 26, 0.4), rgba(15, 15, 15, 0.4));
+  border-radius: 15px;
+  padding: 2.5rem;
+  text-align: center;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(51, 51, 51, 0.6);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+}
+
+.team-member::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.team-member:hover::before {
+  left: 100%;
+}
+
+.team-member:hover {
+  transform: translateY(-10px);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.7),
+    0 0 30px rgba(0, 255, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-color: #00ffff;
+}
+
+.member-photo {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto 2rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #00ffff;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 0 20px rgba(0, 255, 255, 0.5),
+    inset 0 0 20px rgba(0, 255, 255, 0.1);
+  position: relative;
+}
+
+.member-photo::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #00ffff, #ff00ff, #00ff7f, #00ffff);
+  z-index: -1;
+  animation: borderRotate 3s linear infinite;
+}
+
+@keyframes borderRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.member-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.member-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.member-title {
+  font-size: 1.1rem;
+  color: #00ff7f;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(0, 255, 127, 0.6);
+}
+
+.member-description {
+  font-size: 1rem;
+  color: #cccccc;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-family: Arial, sans-serif;
+}
+
+.member-contact {
+  margin-top: 1.5rem;
+}
+
+.contact-email {
+  color: #00ffff;
+  font-size: 0.95rem;
+  margin: 0;
+  text-align: center;
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.8);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
+}
+
+/* Company Values */
+.company-values {
+  padding: 80px 0;
+  background: linear-gradient(135deg, rgba(10, 10, 10, 0.4) 0%, rgba(26, 10, 26, 0.4) 100%);
+  color: white;
+  border-top: 2px solid #ff00ff;
+  backdrop-filter: blur(15px);
+  border-radius: 15px;
+  margin: 20px 0;
+}
+
+.company-values h2 {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  font-weight: 600;
+  color: #ff00ff;
+  text-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+  font-family: 'Dela Gothic One', cursive;
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3rem;
+  margin-top: 3rem;
+}
+
+.value-item {
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(145deg, rgba(20, 20, 20, 0.8), rgba(40, 40, 40, 0.6));
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 0, 255, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.value-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.value-item:hover::before {
+  opacity: 1;
+}
+
+.value-item:hover {
+  transform: translateY(-5px);
+  border-color: #ff00ff;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.5),
+    0 0 25px rgba(255, 0, 255, 0.4);
+}
+
+.value-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.8));
+}
+
+.value-item h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #00ffff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+}
+
+.value-item p {
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  color: #cccccc;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .company-title {
+    font-size: 2.5rem;
+  }
+
+  .company-tagline {
+    font-size: 1.2rem;
+  }
+
+  .company-description h2,
+  .team-section h2,
+  .company-values h2 {
+    font-size: 2.5rem;
+  }
+
+  .team-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .team-member {
+    padding: 2rem;
+  }
+
+  .about-hero {
+    height: 50vh;
+  }
+
+  .company-description,
+  .team-section,
+  .company-values {
+    padding: 60px 0;
+  }
+
+  .description-content {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .company-title {
+    font-size: 2rem;
+  }
+
+  .company-tagline {
+    font-size: 1rem;
+  }
+
+  .container {
+    padding: 0 15px;
+  }
+
+  .team-member {
+    padding: 1.5rem;
+  }
+
+  .member-photo {
+    width: 120px;
+    height: 120px;
+  }
+
+  .description-content {
+    padding: 1.5rem;
+  }
+
+  .company-description h2,
+  .team-section h2,
+  .company-values h2 {
+    font-size: 2rem;
+  }
+}

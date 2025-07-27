@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../bootstrap.php';
-require_once BASE_PATH . '/handlers/auth.handler.php';
+require_once HANDLERS_PATH . '/auth.handler.php';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -12,25 +12,30 @@ if (isset($_SESSION['user'])) {
     exit;
 }
 
-// If POST and login failed, $error may be set by auth.handler.php
+// Set page title for the layout
+$pageTitle = 'Login';
+
+// Define the content for the layout
+ob_start();
 ?>
-<!DOCTYPE html>
-<html>
+<div class="brand-container">
+    <div class="brand-text">
+        <span class="sin">SIN</span><span class="thesize">THESIZE</span>
+    </div>
+    <div class="tagline">Access Your Digital Realm</div>
+</div>
+<h2>Login</h2>
+<form method="POST">
+    <input name="username" placeholder="Username" required>
+    <input name="password" type="password" placeholder="Password" required>
+    <button type="submit">Access System</button>
+    <?php if (isset($error))
+        echo "<p style='color:red;'>$error</p>"; ?>
+</form>
+<a href="/pages/SignUp/index.php">Don't have an account? Join the collective.</a>
+<?php
+$content = ob_get_clean();
 
-    <head>
-        <title>Login</title>
-    </head>
-
-    <body>
-        <h2>Login</h2>
-        <form method="POST">
-            <input name="username" placeholder="Username" required>
-            <input name="password" type="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-            <?php if (isset($error))
-                echo "<p style='color:red;'>$error</p>"; ?>
-        </form>
-        <a href="/pages/SignUp/index.php">Don't have an account? Sign up here.</a>
-    </body>
-
-</html>
+// Include the auth layout
+include LAYOUTS_PATH . '/auth.layout.php';
+?>
