@@ -1,3 +1,3 @@
 <footer>
-    <p>&copy; <?= date('Y') ?> AD-Task-3</p>
+    <p>&copy; <?= date('Y') ?> AD-Final-Project</p>
 </footer>
