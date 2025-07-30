@@ -5,7 +5,7 @@
 <br />
 <div align="center">
   <a href="https://https://github.com/Mikaelaa05">
-    <img src="assets/img/Kessoku_Band_Logo_Clear.png" alt="Nyebe" width="130" height="100">
+    <img src="assets/img/Cyberpunk_logo.png" alt="Cyberpunk Logo" width="200" height="200">
   </a>
 
   <h3 align="center">AD-Final-Project</h3>
@@ -64,6 +64,90 @@ AD-Final-Project is a modern PHP web application template for rapid development 
 - Multi-table seeding: users, projects, tasks, project_users
 - Ready for deployment or classroom demonstration
 
+---
+
+**Cyberpunk E-Commerce Additions:**
+- Cyberpunk-themed shop selling augments and energy sources
+- Product catalog with images, categories, prices, and stock
+- Customers can register, browse, add to cart, and checkout
+- Real-time stock management and session-based cart
+- Admin dashboard for product and stock management
+- Orders and order items tables for full e-commerce flow
+- Advanced error handling with cyberpunk-styled error pages
+- Responsive dashboard and shop UI with custom CSS
+
+---
+
+**Database System:**
+- Separate tables for users (admins/team), customers, products, orders, and order_items
+- Static data for users, customers, and products in `/staticData/dummies`
+- SQL models for all tables in `/database`
+- Utilities for migrate, seed, reset, and verify for each table
+- Unified status check script: `utils/allDatabasesStatus.util.php`
+
+---
+
+**Cart & Stock Management:**
+- Cart operations: add, update, remove, clear, get
+- Stock reserved when added to cart, restored when removed
+- Checkout process deducts stock and creates orders
+- Admins can adjust stock and manage products
+- All operations use database transactions for safety
+- Session-based cart with security and persistence
+
+---
+
+**Cyberpunk Theming:**
+- Custom dashboard and shop CSS (`assets/css/dashboard.css`, `assets/css/shop.css`)
+- Neon colors, dark backgrounds, and futuristic fonts and UI
+- Cyberpunk branding
+- Team and company branding on About page
+- Custom product images with cyberpunk style and alt/caption text for accessibility
+
+---
+
+**Error Handling:**
+- Centralized ErrorHandler utility (`utils/errorHandler.util.php`)
+- Dedicated error pages for unauthorized, bad request, not found, server error, and database issues
+- Consistent cyberpunk styling for error pages
+- Error logging and user-friendly messages
+
+---
+
+**Admin Features:**
+- Admin dashboard for product management (`pages/Admin/index.php`)
+- Add/edit/remove products, adjust stock, view orders
+- Role-based access control (admin, designer, QA, etc.)
+
+---
+
+**Database Utilities:**
+- Migrate, seed, reset, and verify commands for users, customers, products, orders, order_items
+- Batch setup commands for all tables
+- Status check script shows table existence and population
+
+---
+
+**Session & Security:**
+- Cart tied to authenticated user sessions
+- Input validation and sanitization throughout
+- SQL injection prevention with prepared statements
+- Passwords hashed securely
+
+---
+
+**Testing & Monitoring:**
+- Logging for cart and stock operations
+- Recommended testing scenarios for concurrency, stock depletion, error recovery
+- Monitoring metrics: cart abandonment, order value, stock turnover
+
+---
+
+**Future Enhancements:**
+- Wishlist, inventory alerts, bulk cart actions, price history, recommendations, mobile API, analytics dashboard
+
+---
+
 ### Key Components
 
 | Component             | Purpose                                                               | Technologies & Interactions                                                                 |
@@ -75,6 +159,63 @@ AD-Final-Project is a modern PHP web application template for rapid development 
 | **Frontend UI**       | Responsive pages for login, signup, dashboard, and error handling.    | HTML, CSS, PHP includes (components/layouts), minimal JS.                                   |
 | **Dockerized Stack**  | Ensures consistent environment for all users.                         | Docker Compose, Dockerfile, .env, Apache, PHP extensions.                                   |
 | **Central Router**    | Clean URL routing for all requests.                                   | `router.php`, PHP built-in server, Apache in Docker.                                        |
+| **Cart & Stock**      | E-commerce cart and stock management system.                          | PHP, PostgreSQL, session management, AJAX, error handling.                                  |
+| **Admin Dashboard**   | Product and stock management for admins.                              | PHP, PostgreSQL, role-based access, custom UI.                                              |
+
+---
+
+### Quick Database Management Commands
+
+```sh
+# Migrate all tables
+docker exec adfinalproject-service php /var/www/html/utils/dbMigratePostgresql.util.php
+
+# Seed all tables
+docker exec adfinalproject-service php /var/www/html/utils/dbSeederPostgresql.util.php
+
+# Reset all tables
+docker exec adfinalproject-service php /var/www/html/utils/dbResetPostgresql.util.php
+
+# Check database status
+docker exec adfinalproject-service php /var/www/html/utils/allDatabasesStatus.util.php
+```
+
+**Individual Table Utilities:**
+```sh
+docker exec adfinalproject-service php /var/www/html/utils/usersTableMigrate.util.php
+docker exec adfinalproject-service php /var/www/html/utils/customersTableMigrate.util.php
+docker exec adfinalproject-service php /var/www/html/utils/productsTableMigrate.util.php
+# ... and corresponding Seeder, Reset, Verify scripts for each table
+```
+
+---
+
+**Shop & Cart API Endpoints:**
+- `/handlers/cart.handler.php` for cart operations (add, update, remove, clear, get)
+- `/handlers/checkout.handler.php` for checkout processing
+
+---
+
+**Database Schema Highlights:**
+- `users`: Admins/team, with roles and secure passwords
+- `customers`: Registered buyers, with contact info and address
+- `products`: Cyberpunk augments, energy sources, with images and stock
+- `orders` & `order_items`: Full order tracking and checkout
+
+---
+
+**Team & About Page:**
+- Company: SINTHESIZE Corp.
+- Team roles: Database Manager, QA Manager, Backend, Designer, Front-End Developer
+- About page with team bios and photos
+
+---
+
+**Docs & Manuals:**
+- `/docs/Cart Functionality.md`: Cart and stock management details
+- `/docs/Stock Management.md`: Stock flow, session, security, error handling, frontend integration
+- `/docs/Error Handling System Status.md`: Error handling standards and coverage
+- `/docs/Separate Database Utilities Manual.md`: Individual table utilities and setup
 
 ---
 
@@ -102,7 +243,7 @@ AD-Final-Project is a modern PHP web application template for rapid development 
 ![Composer](https://img.shields.io/badge/Composer-885630?style=for-the-badge&logo=composer&logoColor=white)
 ![vlucas/phpdotenv](https://img.shields.io/badge/phpdotenv-5.6.2-blue?logo=php)
 ![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
-![DBMC/DBCode](https://img.shields.io/badge/DBMC%20(DBCode)-blue?style=for-the-badge)
+![Database/JDBC](https://img.shields.io/badge/Database%20(JDBC)-blue?style=for-the-badge)
 
 ---
 
