@@ -4,11 +4,10 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../bootstrap.php';
 require_once UTILS_PATH . '/auth.util.php';
 
-// Check if user is authenticated
-if (!isAuthenticated()) {
-    header('Location: /pages/Login');
-    exit;
-}
+session_start();
+
+// Check if user is authenticated (for potential personalized content)
+$isLoggedIn = isset($_SESSION['user']);
 
 // Page configuration
 $pageTitle = 'About Us';
