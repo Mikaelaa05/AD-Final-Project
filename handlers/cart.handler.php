@@ -67,7 +67,6 @@ switch ($action) {
     default:
         ErrorHandler::jsonError('Invalid action', 400);
 }
-}
 
 function addToCart($pdo) {
     $productId = $_POST['product_id'] ?? '';
