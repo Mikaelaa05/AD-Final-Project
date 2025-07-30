@@ -7,7 +7,6 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once UTILS_PATH . '/auth.util.php';
-require_once UTILS_PATH . '/envSetter.util.php';
 require_once UTILS_PATH . '/cart.util.php';
 require_once UTILS_PATH . '/errorHandler.util.php';
 
@@ -18,9 +17,6 @@ if (!isset($_SESSION['user'])) {
     ErrorHandler::jsonError('User not authenticated', 401);
 }
 
-// Configuration from environment
-$typeConfig = envSetter('postgresql');
-
 // Get the action from the request
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 
@@ -30,11 +26,12 @@ if (empty($action)) {
 
 // Database connection
 try {
-    $host = $typeConfig['pgHost'];
-    $port = $typeConfig['pgPort'];
-    $username = $typeConfig['pgUser'];
-    $password = $typeConfig['pgPass'];
-    $dbname = $typeConfig['pgDb'];
+    // Use hardcoded database credentials for now
+    $host = 'adfinalproject-postgresql';
+    $port = '5432';
+    $username = 'user';
+    $password = 'password';
+    $dbname = 'ad_final_project_db';
 
     $dsn = "pgsql:host={$host};port={$port};dbname={$dbname}";
     $pdo = new PDO($dsn, $username, $password, [
@@ -46,6 +43,9 @@ try {
 }
 
 switch ($action) {
+    case 'test':
+        echo json_encode(['success' => true, 'message' => 'Cart handler is working']);
+        break;
     case 'add':
         addToCart($pdo);
         break;
@@ -69,10 +69,17 @@ switch ($action) {
 }
 
 function addToCart($pdo) {
+    error_log("AddToCart function called");
+    error_log("POST data: " . json_encode($_POST));
+    
     $productId = $_POST['product_id'] ?? '';
     $quantity = (int) ($_POST['quantity'] ?? 1);
     
+    error_log("Product ID: " . $productId);
+    error_log("Quantity: " . $quantity);
+    
     if (empty($productId) || $quantity <= 0) {
+        error_log("Invalid product ID or quantity");
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid product ID or quantity']);
         return;
@@ -82,12 +89,17 @@ function addToCart($pdo) {
     $pdo->beginTransaction();
     
     try {
+        error_log("Starting database transaction");
+        
         // Validate product exists and is active with current stock
         $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ? AND is_active = true FOR UPDATE");
         $stmt->execute([$productId]);
         $product = $stmt->fetch(PDO::FETCH_ASSOC);
         
+        error_log("Product query result: " . json_encode($product));
+        
         if (!$product) {
+            error_log("Product not found or inactive");
             $pdo->rollBack();
             http_response_code(404);
             echo json_encode(['success' => false, 'message' => 'Product not found or inactive']);
@@ -150,7 +162,7 @@ function addToCart($pdo) {
         $cartSummary = calculateCartTotals();
         
         echo json_encode([
-            'success' => true, 
+            'success' => true,
             'message' => 'Product added to cart successfully',
             'cart_count' => count($_SESSION['cart']),
             'cart_summary' => $cartSummary,
