@@ -9,19 +9,24 @@ require_once __DIR__ . '/../bootstrap.php';
 require_once UTILS_PATH . '/auth.util.php';
 require_once UTILS_PATH . '/envSetter.util.php';
 require_once UTILS_PATH . '/cart.util.php';
+require_once UTILS_PATH . '/errorHandler.util.php';
 
 session_start();
 
 // Check if user is authenticated
 if (!isset($_SESSION['user'])) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'User not authenticated']);
-    exit;
+    ErrorHandler::jsonError('User not authenticated', 401);
 }
+
+// Configuration from environment
+$typeConfig = envSetter('postgresql');
 
 // Get the action from the request
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
-$response = ['success' => false, 'message' => 'Invalid action'];
+
+if (empty($action)) {
+    ErrorHandler::jsonError('Invalid action', 400);
+}
 
 // Database connection
 try {
@@ -36,9 +41,8 @@ try {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     ]);
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Database connection failed']);
-    exit;
+    error_log("Cart handler database connection failed: " . $e->getMessage());
+    ErrorHandler::jsonError('Database connection failed', 500);
 }
 
 switch ($action) {
@@ -61,9 +65,8 @@ switch ($action) {
         getCurrentStock($pdo);
         break;
     default:
-        http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Invalid action']);
-        break;
+        ErrorHandler::jsonError('Invalid action', 400);
+}
 }
 
 function addToCart($pdo) {
