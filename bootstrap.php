@@ -10,4 +10,5 @@ define('ERRORS_PATH', realpath(BASE_PATH . '/errors'));
 define('ASSETS_PATH', realpath(BASE_PATH . '/assets'));
 define('DATABASE_PATH', realpath(BASE_PATH . '/database'));
 define('STATIC_DATA_PATH', realpath(BASE_PATH . '/staticData'));
-chdir(BASE_PATH);
+chdir(BASE_PATH) ;
+
